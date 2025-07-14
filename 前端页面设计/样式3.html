@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗色幻想 | 技术博客</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #e94560;
+            --accent-secondary: #f38181;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #6c757d;
+            --border-radius: 15px;
+            --shadow: 0 10px 30px rgba(233, 69, 96, 0.2);
+            --glow: 0 0 20px rgba(233, 69, 96, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 背景特效 */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(243, 129, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(233, 69, 96, 0.05) 0%, transparent 50%);
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* 布局样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            text-shadow: var(--glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-top: 80px;
+            padding: 40px 0;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-radius: var(--border-radius);
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(233, 69, 96, 0.03) 10px,
+                rgba(233, 69, 96, 0.03) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-50px) translateY(-50px);
+            }
+            100% {
+                transform: translateX(50px) translateY(50px);
+            }
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        /* 内容网格 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 个人信息卡片 */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent 30%
+            );
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .profile-title {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .profile-motto {
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(233, 69, 96, 0.1);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid rgba(233, 69, 96, 0.2);
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--text-primary);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        /* 日历组件 */
+        .calendar-widget {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .calendar-widget:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            padding: 5px;
+        }
+
+        .calendar-btn:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 5px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .calendar-date {
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .calendar-date:hover {
+            background: rgba(233, 69, 96, 0.2);
+        }
+
+        .calendar-date.today {
+            background: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        .calendar-date.event {
+            position: relative;
+        }
+
+        .calendar-date.event::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--accent-secondary);
+            border-radius: 50%;
+        }
+
+        /* 天气组件 */
+        .weather-widget {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .weather-widget:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .weather-location {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .weather-time {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .weather-detail {
+            text-align: center;
+            padding: 10px;
+            background: rgba(233, 69, 96, 0.1);
+            border-radius: 10px;
+        }
+
+        .weather-detail-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .weather-detail-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* 推荐文章区域 */
+        .articles-section {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 70%;
+            background: linear-gradient(180deg, var(--accent), var(--accent-secondary));
+            border-radius: 2px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .article-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(233, 69, 96, 0.1);
+            position: relative;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow);
+            border-color: var(--accent);
+        }
+
+        .article-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .article-image {
+            height: 150px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .article-card:hover .article-image img {
+            transform: scale(1.1);
+        }
+
+        .article-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        .article-content {
+            padding: 20px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .article-card:hover .article-title {
+            color: var(--accent);
+        }
+
+        .article-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid rgba(233, 69, 96, 0.2);
+            padding: 50px 0 30px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .footer-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(233, 69, 96, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 加载动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation"></div>
+    <div class="floating-particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 8s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 10s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 12s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 14s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 16s;"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="#" class="logo">
+                <i class="fas fa-moon"></i>
+                暗色幻想
+            </a>
+            <div class="nav-links">
+                <a href="#">首页</a>
+                <a href="#">文章</a>
+                <a href="#">分类</a>
+                <a href="#">标签</a>
+                <a href="#">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container main-content">
+        <!-- 英雄区域 -->
+        <div class="hero-section fade-in">
+            <h1 class="hero-title">欢迎来到暗色幻想</h1>
+            <p class="hero-subtitle">在代码与幻想的交汇处，探索技术的无限可能</p>
+        </div>
+
+        <!-- 内容网格 -->
+        <div class="content-grid">
+            <!-- 侧边栏 -->
+            <div class="sidebar">
+                <!-- 个人信息卡片 -->
+                <div class="profile-card fade-in">
+                    <div class="avatar-container">
+                        <div class="avatar">
+                            <!-- 头像图片位置 -->
+                            <img src="https://via.placeholder.com/120x120/1a1a2e/e94560?text=avatar" alt="头像">
+                        </div>
+                    </div>
+                    <h3 class="profile-name">夜羽</h3>
+                    <p class="profile-title">前端开发者 | 二次元爱好者</p>
+                    <p class="profile-motto">"在代码的世界里，编织属于自己的幻想"</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-bilibili"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+
+                <!-- 日历组件 -->
+                <div class="calendar-widget fade-in delay-1">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">2024年1月</h3>
+                        <div class="calendar-controls">
+                            <button class="calendar-btn"><i class="fas fa-chevron-left"></i></button>
+                            <button class="calendar-btn"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">日</div>
+                        <div class="calendar-day">一</div>
+                        <div class="calendar-day">二</div>
+                        <div class="calendar-day">三</div>
+                        <div class="calendar-day">四</div>
+                        <div class="calendar-day">五</div>
+                        <div class="calendar-day">六</div>
+                        
+                        <div class="calendar-date">1</div>
+                        <div class="calendar-date">2</div>
+                        <div class="calendar-date">3</div>
+                        <div class="calendar-date">4</div>
+                        <div class="calendar-date">5</div>
+                        <div class="calendar-date">6</div>
+                        <div class="calendar-date">7</div>
+                        <div class="calendar-date">8</div>
+                        <div class="calendar-date">9</div>
+                        <div class="calendar-date event">10</div>
+                        <div class="calendar-date">11</div>
+                        <div class="calendar-date">12</div>
+                        <div class="calendar-date">13</div>
+                        <div class="calendar-date">14</div>
+                        <div class="calendar-date">15</div>
+                        <div class="calendar-date today">16</div>
+                        <div class="calendar-date">17</div>
+                        <div class="calendar-date">18</div>
+                        <div class="calendar-date event">19</div>
+                        <div class="calendar-date">20</div>
+                        <div class="calendar-date">21</div>
+                        <div class="calendar-date">22</div>
+                        <div class="calendar-date">23</div>
+                        <div class="calendar-date">24</div>
+                        <div class="calendar-date">25</div>
+                        <div class="calendar-date">26</div>
+                        <div class="calendar-date">27</div>
+                        <div class="calendar-date">28</div>
+                        <div class="calendar-date">29</div>
+                        <div class="calendar-date">30</div>
+                        <div class="calendar-date">31</div>
+                    </div>
+                </div>
+
+                <!-- 天气组件 -->
+                <div class="weather-widget fade-in delay-2">
+                    <div class="weather-header">
+                        <div class="weather-location">东京都</div>
+                        <div class="weather-time">1月16日</div>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon">
+                            <i class="fas fa-cloud-moon"></i>
+                        </div>
+                        <div class="weather-temp">-2°C</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <div class="weather-detail-label">湿度</div>
+                            <div class="weather-detail-value">45%</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div class="weather-detail-label">风速</div>
+                            <div class="weather-detail-value">12km/h</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div class="weather-detail-label">体感</div>
+                            <div class="weather-detail-value">-5°C</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 推荐文章 -->
+            <div class="articles-section fade-in delay-3">
+                <h2 class="section-title">推荐文章</h2>
+                <div class="articles-grid">
+                    <!-- 文章1 -->
+                    <div class="article-card">
+                        <div class="article-image">
+                            <!-- 文章图片位置 -->
+                            <img src="https://via.placeholder.com/400x200/16213e/e94560?text=React+Hooks" alt="React Hooks">
+                            <div class="article-badge">React</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">深入React Hooks的魔法世界</h3>
+                            <p class="article-excerpt">探索React Hooks的底层原理，从useState到自定义Hook，打造优雅的React组件...</p>
+                            <div class="article-meta">
+                                <span><i class="far fa-calendar"></i> 2024-01-15</span>
+                                <span><i class="far fa-eye"></i> 1.2k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 文章2 -->
+                    <div class="article-card">
+                        <div class="article-image">
+                            <!-- 文章图片位置 -->
+                            <img src="https://via.placeholder.com/400x200/16213e/e94560?text=CSS+Grid" alt="CSS Grid">
+                            <div class="article-badge">CSS</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">CSS Grid布局的艺术</h3>
+                            <p class="article-excerpt">掌握Grid布局，创建响应式设计的终极指南，让网页布局变得优雅而强大...</p>
+                            <div class="article-meta">
+                                <span><i class="far fa-calendar"></i> 2024-01-12</span>
+                                <span><i class="far fa-eye"></i> 856</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 文章3 -->
+                    <div class="article-card">
+                        <div class="article-image">
+                            <!-- 文章图片位置 -->
+                            <img src="https://via.placeholder.com/400x200/16213e/e94560?text=TypeScript" alt="TypeScript">
+                            <div class="article-badge">TypeScript</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">TypeScript高级类型体操</h3>
+                            <p class="article-excerpt">深入TypeScript的类型系统，探索泛型、条件类型和模板字面量的高级用法...</p>
+                            <div class="article-meta">
+                                <span><i class="far fa-calendar"></i> 2024-01-10</span>
+                                <span><i class="far fa-eye"></i> 2.1k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 文章4 -->
+                    <div class="article-card">
+                        <div class="article-image">
+                            <!-- 文章图片位置 -->
+                            <img src="https://via.placeholder.com/400x200/16213e/e94560?text=WebGL" alt="WebGL">
+                            <div class="article-badge">WebGL</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">WebGL与Three.js入门</h3>
+                            <p class="article-excerpt">从零开始学习WebGL和Three.js，打造炫酷的3D网页效果，探索前端的新维度...</p>
+                            <div class="article-meta">
+                                <span><i class="far fa-calendar"></i> 2024-01-08</span>
+                                <span><i class="far fa-eye"></i> 943</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于暗色幻想</h3>
+                    <p>一个充满二次元气息的技术博客，分享前端开发的点点滴滴，记录技术成长的每一个瞬间。</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-bilibili"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>快速导航</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>首页</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>文章归档</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>技术标签</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>关于我</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>热门标签</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-tag"></i>React</a></li>
+                        <li><a href="#"><i class="fas fa-tag"></i>TypeScript</a></li>
+                        <li><a href="#"><i class="fas fa-tag"></i>CSS动画</a></li>
+                        <li><a href="#"><i class="fas fa-tag"></i>WebGL</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-envelope"></i> yeyu@darkfantasy.com</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> github.com/yeyu</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> 东京都秋叶原</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 暗色幻想 | 在代码中编织幻想 | 保留所有权利</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 添加粒子效果
+        function createParticles() {
+            const particlesContainer = document.querySelector('.floating-particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 添加滚动动画
+        function addScrollAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
+
+        // 更新天气信息
+        function updateWeather() {
+            const weatherIcon = document.querySelector('.weather-icon i');
+            const weatherTemp = document.querySelector('.weather-temp');
+            const icons = ['fa-sun', 'fa-cloud', 'fa-cloud-rain', 'fa-cloud-snow', 'fa-cloud-moon'];
+            const temps = [-5, -2, 0, 2, -3];
+            const randomIndex = Math.floor(Math.random() * icons.length);
+            
+            weatherIcon.className = 'fas ' + icons[randomIndex];
+            weatherTemp.textContent = temps[randomIndex] + '°C';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            addScrollAnimation();
+            updateWeather();
+            
+            // 日历交互
+            document.querySelectorAll('.calendar-date').forEach(date => {
+                date.addEventListener('click', () => {
+                    console.log('Selected date:', date.textContent);
+                });
+            });
+        });
+
+        // 鼠标跟随效果
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.createElement('div');
+            cursor.className = 'cursor-glow';
+            cursor.style.cssText = `
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                background: radial-gradient(circle, rgba(233, 69, 96, 0.3) 0%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                left: ${e.clientX - 10}px;
+                top: ${e.clientY - 10}px;
+                transition: opacity 0.3s ease;
+            `;
+            
+            document.body.appendChild(cursor);
+            
+            setTimeout(() => {
+                cursor.style.opacity = '0';
+                setTimeout(() => cursor.remove(), 300);
+            }, 100);
+        });
+    </script>
+</body>
+</html>

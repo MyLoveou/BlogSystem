@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星尘の小窝 | 二次元个人博客</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #7a5af5;
+            --secondary: #ff6b9c;
+            --accent: #00d0ff;
+            --dark: #0f0e17;
+            --darker: #0a0a12;
+            --light: #fffffe;
+            --gray: #a7a9be;
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 背景效果 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: url('https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(122, 90, 245, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) translateX(100px) rotate(360deg); }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(15, 14, 23, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--light);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 340px 1fr;
+            }
+        }
+        
+        /* 左侧栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* 个人信息卡片 */
+        .profile-card {
+            background: rgba(15, 14, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(122, 90, 245, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(122, 90, 245, 0.2);
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 20px rgba(122, 90, 245, 0.4);
+        }
+        
+        .avatar-frame {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            border: 2px solid var(--secondary);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .title {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .motto {
+            font-style: italic;
+            color: var(--light);
+            margin-bottom: 25px;
+            padding: 0 15px;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .motto::before, .motto::after {
+            content: '"';
+            font-size: 2.5rem;
+            color: var(--secondary);
+            position: absolute;
+            opacity: 0.5;
+        }
+        
+        .motto::before {
+            top: -20px;
+            left: -10px;
+        }
+        
+        .motto::after {
+            bottom: -35px;
+            right: -10px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(122, 90, 245, 0.2);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(122, 90, 245, 0.4);
+        }
+        
+        .social-links a:hover::before {
+            opacity: 1;
+        }
+        
+        /* 日历组件 */
+        .calendar-widget {
+            background: rgba(15, 14, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            transition: var(--transition);
+            border: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        .calendar-widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(122, 90, 245, 0.2);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .calendar-controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            padding: 5px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-controls button:hover {
+            background: rgba(122, 90, 245, 0.2);
+            color: var(--light);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 10px 0;
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .calendar-date {
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .calendar-date:hover {
+            background: rgba(122, 90, 245, 0.2);
+        }
+        
+        .calendar-date.today {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 10px rgba(122, 90, 245, 0.5);
+        }
+        
+        .calendar-date.event::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--secondary);
+            border-radius: 50%;
+        }
+        
+        /* 天气组件 */
+        .weather-widget {
+            background: linear-gradient(135deg, rgba(122, 90, 245, 0.3), rgba(255, 107, 156, 0.3));
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            color: white;
+            transition: var(--transition);
+            border: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        .weather-widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(122, 90, 245, 0.2);
+        }
+        
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .weather-location {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .weather-icon {
+            font-size: 4rem;
+            margin-right: 15px;
+            color: var(--accent);
+            filter: drop-shadow(0 0 5px rgba(0, 208, 255, 0.5));
+        }
+        
+        .weather-temp {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 208, 255, 0.5);
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        
+        .weather-detail {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .weather-detail i {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        /* 推荐文章 */
+        .articles-section {
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--light);
+            position: relative;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 6px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        .section-title i {
+            margin-left: 15px;
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+        
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .article-card {
+            background: rgba(15, 14, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid rgba(122, 90, 245, 0.2);
+            position: relative;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(122, 90, 245, 0.3);
+            border: 1px solid rgba(122, 90, 245, 0.5);
+        }
+        
+        .card-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        
+        .article-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 2;
+        }
+        
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--light);
+            transition: var(--transition);
+            line-height: 1.4;
+        }
+        
+        .card-title:hover {
+            color: var(--accent);
+        }
+        
+        .card-excerpt {
+            color: var(--gray);
+            margin-bottom: 15px;
+            flex-grow: 1;
+            line-height: 1.7;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.9rem;
+            padding-top: 15px;
+            border-top: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        /* 页脚 */
+        .footer {
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(10px);
+            color: var(--gray);
+            padding: 50px 0 20px;
+            margin-top: 80px;
+            border-top: 1px solid rgba(122, 90, 245, 0.2);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+        
+        .footer-column h3 {
+            color: var(--light);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+        
+        .footer-links a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(122, 90, 245, 0.1);
+            font-size: 0.9rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade {
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        /* 装饰元素 */
+        .decoration {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .decoration-1 {
+            top: 10%;
+            right: 10%;
+            font-size: 15rem;
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
+        
+        .decoration-2 {
+            bottom: 20%;
+            left: 5%;
+            font-size: 12rem;
+            color: var(--secondary);
+            transform: rotate(-10deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景 -->
+    <div class="background"></div>
+    <div class="particles" id="particles"></div>
+    
+    <!-- 装饰元素 -->
+    <div class="decoration decoration-1">
+        <i class="fas fa-star"></i>
+    </div>
+    <div class="decoration decoration-2">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo animate-fade">
+                <i class="fas fa-paw"></i> 星尘<span>の小窝</span>
+            </a>
+            <div class="nav-links">
+                <a href="#" class="animate-fade delay-1 active">首页</a>
+                <a href="#" class="animate-fade delay-2">文章</a>
+                <a href="#" class="animate-fade delay-3">画廊</a>
+                <a href="#" class="animate-fade delay-3">手办</a>
+                <a href="#" class="animate-fade delay-3">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 左侧栏 -->
+            <div class="sidebar">
+                <!-- 个人信息卡片 -->
+                <div class="profile-card animate-fade">
+                    <div class="avatar-container">
+                        <img src="https://images.unsplash.com/photo-1635107510862-53886e926b74?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Avatar" class="avatar">
+                        <div class="avatar-frame"></div>
+                    </div>
+                    <h2 class="name">星尘喵</h2>
+                    <p class="title">二次元爱好者 | 插画师 | 前端开发</p>
+                    <p class="motto">在虚拟与现实之间寻找平衡，用代码和画笔创造自己的世界</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-bilibili"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-pixiv"></i></a>
+                    </div>
+                </div>
+                
+                <!-- 日历组件 -->
+                <div class="calendar-widget animate-fade delay-1">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">2023年10月</h3>
+                        <div class="calendar-controls">
+                            <button><i class="fas fa-chevron-left"></i></button>
+                            <button><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">日</div>
+                        <div class="calendar-day">一</div>
+                        <div class="calendar-day">二</div>
+                        <div class="calendar-day">三</div>
+                        <div class="calendar-day">四</div>
+                        <div class="calendar-day">五</div>
+                        <div class="calendar-day">六</div>
+                        
+                        <!-- 日历日期 -->
+                        <div class="calendar-date">1</div>
+                        <div class="calendar-date">2</div>
+                        <div class="calendar-date">3</div>
+                        <div class="calendar-date">4</div>
+                        <div class="calendar-date">5</div>
+                        <div class="calendar-date">6</div>
+                        <div class="calendar-date">7</div>
+                        <div class="calendar-date">8</div>
+                        <div class="calendar-date">9</div>
+                        <div class="calendar-date">10</div>
+                        <div class="calendar-date">11</div>
+                        <div class="calendar-date">12</div>
+                        <div class="calendar-date">13</div>
+                        <div class="calendar-date">14</div>
+                        <div class="calendar-date">15</div>
+                        <div class="calendar-date event">16</div>
+                        <div class="calendar-date">17</div>
+                        <div class="calendar-date today">18</div>
+                        <div class="calendar-date">19</div>
+                        <div class="calendar-date">20</div>
+                        <div class="calendar-date">21</div>
+                        <div class="calendar-date">22</div>
+                        <div class="calendar-date">23</div>
+                        <div class="calendar-date event">24</div>
+                        <div class="calendar-date">25</div>
+                        <div class="calendar-date">26</div>
+                        <div class="calendar-date">27</div>
+                        <div class="calendar-date">28</div>
+                        <div class="calendar-date">29</div>
+                        <div class="calendar-date">30</div>
+                        <div class="calendar-date">31</div>
+                    </div>
+                </div>
+                
+                <!-- 天气组件 -->
+                <div class="weather-widget animate-fade delay-2">
+                    <div class="weather-header">
+                        <div class="weather-location">秋叶原</div>
+                        <div class="weather-time">10月18日 星期三</div>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon">
+                            <i class="fas fa-cloud-moon"></i>
+                        </div>
+                        <div class="weather-temp">19°C</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <i class="fas fa-wind"></i>
+                            <div>3 km/h</div>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-tint"></i>
+                            <div>65%</div>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-sun"></i>
+                            <div>06:23</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧内容区 -->
+            <div class="content">
+                <div class="articles-section">
+                    <h2 class="section-title animate-fade">最新推荐 <i class="fas fa-fire"></i></h2>
+                    <div class="articles-grid">
+                        <!-- 文章卡片1 -->
+                        <div class="article-card animate-fade">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="二次元绘画">
+                                <div class="card-badge">绘画教程</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">二次元角色绘画技巧：从线稿到上色</h3>
+                                <p class="card-excerpt">分享我多年来积累的二次元角色绘画技巧，包括线稿绘制、色彩搭配和光影处理，适合初学者和进阶画师...</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-15</span>
+                                    <span><i class="far fa-eye"></i> 1245</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片2 -->
+                        <div class="article-card animate-fade delay-1">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="动漫推荐">
+                                <div class="card-badge">动漫推荐</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">2023年秋季新番推荐：不容错过的5部作品</h3>
+                                <p class="card-excerpt">本季度最值得期待的5部动漫作品，从热血战斗到治愈日常，总有一部能触动你的心弦...</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-10</span>
+                                    <span><i class="far fa-eye"></i> 987</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片3 -->
+                        <div class="article-card animate-fade delay-2">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="前端技术">
+                                <div class="card-badge">前端技术</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">用Three.js创建二次元风格3D场景</h3>
+                                <p class="card-excerpt">探索如何使用Three.js和着色器技术创建具有二次元风格的3D场景，为你的网站添加独特视觉效果...</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-05</span>
+                                    <span><i class="far fa-eye"></i> 1532</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片4 -->
+                        <div class="article-card animate-fade delay-3">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="手办收藏">
+                                <div class="card-badge">手办收藏</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">我的2023年手办收藏展示与心得</h3>
+                                <p class="card-excerpt">分享今年入手的精品手办，包括开箱体验、细节展示和收藏心得，一起感受二次元周边的魅力...</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-09-28</span>
+                                    <span><i class="far fa-eye"></i> 876</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>关于博客</h3>
+                <p style="margin-bottom: 20px; line-height: 1.7;">分享二次元文化、插画创作和前端技术的个人空间，记录兴趣与成长的点滴。</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-bilibili"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-pixiv"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>内容分类</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-paint-brush"></i> 插画教程</a></li>
+                    <li><a href="#"><i class="fas fa-film"></i> 动漫推荐</a></li>
+                    <li><a href="#"><i class="fas fa-laptop-code"></i> 前端技术</a></li>
+                    <li><a href="#"><i class="fas fa-figure"></i> 手办收藏</a></li>
+                    <li><a href="#"><i class="fas fa-gamepad"></i> 游戏评测</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>快速链接</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="#"><i class="fas fa-book"></i> 文章归档</a></li>
+                    <li><a href="#"><i class="fas fa-images"></i> 作品画廊</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> 关于我</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> 联系</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>友情链接</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-paw"></i> 喵星人画室</a></li>
+                    <li><a href="#"><i class="fas fa-gamepad"></i> 二次元游戏社区</a></li>
+                    <li><a href="#"><i class="fas fa-camera"></i> Cosplay世界</a></li>
+                    <li><a href="#"><i class="fas fa-music"></i> 动漫音乐站</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2023 星尘の小窝 | 二次元个人博客 | 保留所有权利 | 萌ICP备20231018号
+        </div>
+    </footer>
+    
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机大小
+                const size = Math.random() * 10 + 3;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // 随机颜色
+                const colors = ['#7a5af5', '#ff6b9c', '#00d0ff'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                
+                // 随机动画时长
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // 为卡片添加悬停效果
+            const cards = document.querySelectorAll('.article-card, .profile-card, .calendar-widget, .weather-widget');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = 10;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人博客 | 分享技术与生活</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 12px;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* 布局样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 主体布局 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 320px 1fr;
+            }
+        }
+        
+        /* 个人信息卡片 */
+        .profile-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--light);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .title {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .motto {
+            font-style: italic;
+            color: var(--gray);
+            margin-bottom: 25px;
+            padding: 0 15px;
+            position: relative;
+        }
+        
+        .motto::before, .motto::after {
+            content: '"';
+            font-size: 2rem;
+            color: var(--light-gray);
+            position: absolute;
+        }
+        
+        .motto::before {
+            top: -15px;
+            left: -5px;
+        }
+        
+        .motto::after {
+            bottom: -25px;
+            right: -5px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* 日历组件 */
+        .calendar-widget {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-top: 30px;
+            transition: var(--transition);
+        }
+        
+        .calendar-widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .calendar-controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            padding: 5px;
+        }
+        
+        .calendar-controls button:hover {
+            color: var(--primary);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 8px 0;
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .calendar-date {
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .calendar-date:hover {
+            background: var(--light);
+        }
+        
+        .calendar-date.today {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .calendar-date.event {
+            position: relative;
+        }
+        
+        .calendar-date.event::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        /* 天气组件 */
+        .weather-widget {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-top: 30px;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .weather-widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .weather-location {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .weather-icon {
+            font-size: 3.5rem;
+            margin-right: 15px;
+        }
+        
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        
+        .weather-detail {
+            text-align: center;
+        }
+        
+        /* 推荐文章 */
+        .articles-section {
+            margin-top: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 70%;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .article-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-image {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .article-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+        
+        .card-title:hover {
+            color: var(--primary);
+        }
+        
+        .card-excerpt {
+            color: var(--gray);
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.85rem;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        /* 页脚 */
+        .footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="#" class="logo animate-fade">
+                <i class="fas fa-blog"></i> 技术博客
+            </a>
+            <div class="nav-links">
+                <a href="#" class="animate-fade delay-1">首页</a>
+                <a href="#" class="animate-fade delay-2">文章</a>
+                <a href="#" class="animate-fade delay-3">分类</a>
+                <a href="#" class="animate-fade delay-3">标签</a>
+                <a href="#" class="animate-fade delay-3">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 左侧栏 -->
+            <div class="sidebar">
+                <!-- 个人信息卡片 -->
+                <div class="profile-card animate-fade">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="name">张三</h2>
+                    <p class="title">前端开发工程师 | 技术博主</p>
+                    <p class="motto">代码改变世界，分享创造价值</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                    </div>
+                </div>
+                
+                <!-- 日历组件 -->
+                <div class="calendar-widget animate-fade delay-1">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">2023年10月</h3>
+                        <div class="calendar-controls">
+                            <button><i class="fas fa-chevron-left"></i></button>
+                            <button><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">日</div>
+                        <div class="calendar-day">一</div>
+                        <div class="calendar-day">二</div>
+                        <div class="calendar-day">三</div>
+                        <div class="calendar-day">四</div>
+                        <div class="calendar-day">五</div>
+                        <div class="calendar-day">六</div>
+                        
+                        <!-- 日历日期 -->
+                        <div class="calendar-date">1</div>
+                        <div class="calendar-date">2</div>
+                        <div class="calendar-date">3</div>
+                        <div class="calendar-date">4</div>
+                        <div class="calendar-date">5</div>
+                        <div class="calendar-date">6</div>
+                        <div class="calendar-date">7</div>
+                        <div class="calendar-date">8</div>
+                        <div class="calendar-date">9</div>
+                        <div class="calendar-date">10</div>
+                        <div class="calendar-date">11</div>
+                        <div class="calendar-date">12</div>
+                        <div class="calendar-date">13</div>
+                        <div class="calendar-date">14</div>
+                        <div class="calendar-date">15</div>
+                        <div class="calendar-date event">16</div>
+                        <div class="calendar-date">17</div>
+                        <div class="calendar-date today">18</div>
+                        <div class="calendar-date">19</div>
+                        <div class="calendar-date">20</div>
+                        <div class="calendar-date">21</div>
+                        <div class="calendar-date">22</div>
+                        <div class="calendar-date">23</div>
+                        <div class="calendar-date event">24</div>
+                        <div class="calendar-date">25</div>
+                        <div class="calendar-date">26</div>
+                        <div class="calendar-date">27</div>
+                        <div class="calendar-date">28</div>
+                        <div class="calendar-date">29</div>
+                        <div class="calendar-date">30</div>
+                        <div class="calendar-date">31</div>
+                    </div>
+                </div>
+                
+                <!-- 天气组件 -->
+                <div class="weather-widget animate-fade delay-2">
+                    <div class="weather-header">
+                        <div class="weather-location">北京市</div>
+                        <div class="weather-time">10月18日</div>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="weather-temp">22°C</div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <div>湿度</div>
+                            <div>65%</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div>风速</div>
+                            <div>3km/h</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div>气压</div>
+                            <div>1013hPa</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧内容区 -->
+            <div class="content">
+                <div class="articles-section">
+                    <h2 class="section-title animate-fade">推荐文章</h2>
+                    <div class="articles-grid">
+                        <!-- 文章卡片1 -->
+                        <div class="article-card animate-fade">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="JavaScript高级编程">
+                                <div class="card-badge">前端</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">JavaScript高级编程技巧与实践</h3>
+                                <p class="card-excerpt">探索JavaScript中的高级编程模式和技巧，提升你的编码能力，构建更强大的应用程序。</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-15</span>
+                                    <span><i class="far fa-eye"></i> 1245</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片2 -->
+                        <div class="article-card animate-fade delay-1">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="CSS Grid布局">
+                                <div class="card-badge">CSS</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">CSS Grid布局完全指南</h3>
+                                <p class="card-excerpt">掌握CSS Grid布局，创建响应式网页设计的最佳实践，让你的布局更加灵活和强大。</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-10</span>
+                                    <span><i class="far fa-eye"></i> 987</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片3 -->
+                        <div class="article-card animate-fade delay-2">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="React Hooks">
+                                <div class="card-badge">React</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">深入理解React Hooks</h3>
+                                <p class="card-excerpt">全面解析React Hooks的工作原理和使用场景，提升React开发效率，构建更简洁的组件。</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-10-05</span>
+                                    <span><i class="far fa-eye"></i> 1532</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 文章卡片4 -->
+                        <div class="article-card animate-fade delay-3">
+                            <div class="card-image">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Node.js性能优化">
+                                <div class="card-badge">后端</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">Node.js性能优化实战</h3>
+                                <p class="card-excerpt">Node.js应用性能优化的实用技巧和工具，让你的服务器应用运行更快、更稳定。</p>
+                                <div class="card-meta">
+                                    <span><i class="far fa-calendar"></i> 2023-09-28</span>
+                                    <span><i class="far fa-eye"></i> 876</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于博客</h3>
+                    <p style="margin-bottom: 15px; line-height: 1.7;">分享前端开发、后端技术和设计理念的个人博客，记录技术成长历程，分享实用开发经验。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>导航</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">文章</a></li>
+                        <li><a href="#">分类</a></li>
+                        <li><a href="#">标签</a></li>
+                        <li><a href="#">时间线</a></li>
+                        <li><a href="#">关于</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>热门分类</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">前端开发</a></li>
+                        <li><a href="#">JavaScript</a></li>
+                        <li><a href="#">React</a></li>
+                        <li><a href="#">Node.js</a></li>
+                        <li><a href="#">CSS技巧</a></li>
+                        <li><a href="#">设计模式</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系我</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> contact@example.com</li>
+                        <li><i class="fab fa-github"></i> github.com/username</li>
+                        <li><i class="fab fa-twitter"></i> twitter.com/username</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 北京市海淀区</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 个人博客 | 分享技术与生活 | 京ICP备12345678号
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
