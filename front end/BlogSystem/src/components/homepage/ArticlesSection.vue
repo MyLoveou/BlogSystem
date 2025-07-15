@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import ArticleCard from './ArticleCard.vue'
+import ArticleCard from '../ArticleCard.vue'
 
 export default {
   components: {
