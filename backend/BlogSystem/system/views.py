@@ -9,9 +9,8 @@ from django.db import models
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# Create your views here.
+
+
 class SiteConfigViewSet(viewsets.ModelViewSet):
     """
     站点配置API端点

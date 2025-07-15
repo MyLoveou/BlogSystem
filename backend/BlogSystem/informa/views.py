@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
@@ -11,6 +11,9 @@ from .serializers import (
    ImageUploadSerializer
 )
 from django.contrib.auth import get_user_model
+from .weather_service import fetch_weather_data
+from django.conf import settings
+from datetime import timedelta
 
 User = get_user_model()
 
@@ -34,22 +37,47 @@ class WeatherCacheViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def get_by_location(self, request):
-        """通过位置获取天气缓存"""
         location = request.query_params.get('location')
+        print(1)
         if not location:
-            return Response({'error': '缺少location参数'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Missing location'}, status=400)
         
-        cache = WeatherCache.objects.filter(location=location).first()
-        if not cache:
-            return Response({'error': '未找到天气缓存'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # 检查缓存是否过期
-        if cache.expires_at < timezone.now():
-            cache.delete()  # 删除过期缓存
-            return Response({'error': '缓存已过期'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = self.get_serializer(cache)
-        return Response(serializer.data)
+        try:
+            # 尝试获取缓存
+            cache = WeatherCache.objects.get(location=location)
+            
+            # 如果缓存过期但存在，后台更新
+            if cache.expires_at < timezone.now():
+                # 异步更新缓存 (不阻塞用户请求)
+                from .tasks import update_weather_cache
+                update_weather_cache.delay([location])
+                
+                # 仍返回过期数据（根据需求可改为返回错误）
+                serializer = self.get_serializer(cache)
+                return Response({
+                    **serializer.data,
+                    'warning': 'Cache updating in background'
+                })
+            
+            # 返回有效缓存
+            serializer = self.get_serializer(cache)
+            return Response(serializer.data)
+            
+        except WeatherCache.DoesNotExist:
+            # 首次请求时同步创建缓存
+            weather_data = fetch_weather_data(location)
+            if 'error' in weather_data:
+                return Response(weather_data, status=503)
+                
+            cache = WeatherCache.objects.create(
+                location=location,
+                data=weather_data,
+                expires_at=timezone.now() + timedelta(
+                    hours=settings.CACHE_EXPIRY_HOURS
+                )
+            )
+            serializer = self.get_serializer(cache)
+            return Response(serializer.data, status=201)
 
 class ImageUploadViewSet(viewsets.ModelViewSet):
     """

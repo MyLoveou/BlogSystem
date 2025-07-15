@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from django.conf import settings
 import datetime
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,6 +100,27 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',   # 全局默认需登录
     ),
 }
+# 天气API配置
+WEATHER_API_KEY = "23d2a2d8e3bd4a22911ad75672017d5e"
+WEATHER_API_URL = "https://q66yvxmmfh.re.qweatherapi.com/v7/weather/now"
+CACHE_EXPIRY_HOURS = 1  # 缓存有效期(小时)
+MONITORED_LOCATIONS = ['Beijing', 'Shanghai', 'New York', 'WuHan']  # 监控地点
+
+# Celery配置
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = "Asia/Shanghai"
+
+CELERY_BEAT_SCHEDULE = {
+    'reset-weather-quota': {
+        'task': 'informa.reset_monthly_quota',
+        'schedule': crontab(0, 0, day_of_month=1),
+    },
+    'update-weather-cache': {
+        'task': 'informa.update_weather_caches',
+        'schedule': crontab(minute='*/30'),  # 每 30 分钟
+    },
+} # 每月1号重置天气配额，每 30 分钟更新天气缓存
 
 # JWT 配置
 SIMPLE_JWT = {
@@ -141,7 +163,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-hans" # 语言，改成中文 zh-hans
 
 TIME_ZONE = "UTC"
 
