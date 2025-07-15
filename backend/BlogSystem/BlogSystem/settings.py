@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from tkinter import W
 from django.conf import settings
 import datetime
 from celery.schedules import crontab
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,8 +103,9 @@ REST_FRAMEWORK = {
     ),
 }
 # 天气API配置
-WEATHER_API_KEY = "23d2a2d8e3bd4a22911ad75672017d5e"
-WEATHER_API_URL = "https://q66yvxmmfh.re.qweatherapi.com/v7/weather/now"
+WEATHER_API_KEY = config('WEATHER_API_KEY', default='')
+WEATHER_API_HOST = config('WEATHER_API_HOST', default='')
+WEATHER_API_URL = f"https://{ WEATHER_API_HOST }/v7/weather/now"
 CACHE_EXPIRY_HOURS = 1  # 缓存有效期(小时)
 MONITORED_LOCATIONS = ['Beijing', 'Shanghai', 'New York', 'WuHan']  # 监控地点
 
