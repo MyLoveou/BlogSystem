@@ -1,6 +1,14 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import CategoryViewSet, ArticleViewSet, TagViewSet, PageViewSet, FriendLinkViewSet
+
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet)
+router.register(r'articles', ArticleViewSet)
+router.register(r'tags', TagViewSet)
+router.register(r'pages', PageViewSet)
+
 
 urlpatterns = [
-    # path("test/", views.test, name="test"),
+    path('', include(router.urls)),
 ]

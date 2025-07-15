@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django_filters",
     "acticles",
     "system",
-    "sources",
+    "informa",
 ]
 
 MIDDLEWARE = [
@@ -94,13 +94,16 @@ DATABASES = {
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',   # 全局默认需登录
+    ),
 }
 
 # JWT 配置
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5), # 5分钟过期
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1), # 1天过期
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,

@@ -61,6 +61,11 @@ class NavMenuViewSet(viewsets.ModelViewSet):
         serializer.save(order=max_order + 1)
 
 class LoginView(APIView):
+    """
+    登录接口：POST username & password -> access + refresh
+    """
+    permission_classes = []          # 允许匿名访问
+    authentication_classes = []      # 禁用任何认证
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():

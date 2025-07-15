@@ -84,8 +84,10 @@ class ArticleViewSet(viewsets.ModelViewSet):
     
     提供文章的完整CRUD操作，支持多种过滤和排序
     """
+    filterset_class = ArticleFilter  # 应用过滤器
     queryset = Article.objects.filter(is_deleted=False)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ArticleFilter
     search_fields = ['title', 'content', 'excerpt']
@@ -203,7 +205,8 @@ class PageViewSet(viewsets.ModelViewSet):
     """
     queryset = Page.objects.all()
     serializer_class = PageSerializer
-    permission_classes = [permissions.IsAdminUser]  # 仅管理员可修改
+    # permission_classes = [permissions.IsAdminUser]  # 仅管理员可修改
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'page_type'  # 使用page_type作为查找字段
     
     def get_object(self):

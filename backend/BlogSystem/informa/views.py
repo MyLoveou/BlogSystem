@@ -15,6 +15,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class WeatherCacheViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.AllowAny]  # 公开
+    authentication_classes = []                  # 不需要 JWT
     """
     天气缓存API端点
     
