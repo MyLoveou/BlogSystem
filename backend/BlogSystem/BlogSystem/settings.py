@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from tkinter import W
+import os
 from django.conf import settings
 import datetime
 from celery.schedules import crontab
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework_simplejwt",
+    "corsheaders",
     "rest_framework",
     "django_filters",
     "acticles",
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -116,18 +118,22 @@ CELERY_TIMEZONE = "Asia/Shanghai"
 
 CELERY_BEAT_SCHEDULE = {
     'reset-weather-quota': {
-        'task': 'informa.reset_monthly_quota',
+        'task': 'informa.tasks.reset_monthly_quota',
         'schedule': crontab(0, 0, day_of_month=1),
     },
     'update-weather-cache': {
-        'task': 'informa.update_weather_caches',
+        'task': 'informa.tasks.update_weather_caches',
         'schedule': crontab(minute='*/30'),  # 每 30 分钟
+    },
+    'clean-deleted-media': {
+        'task': 'informa.management.commands.clean_deleted_media.Command.handle',
+        'schedule': crontab(0, 0, day_of_month=1),  # 每月 1 号执行
     },
 } # 每月1号重置天气配额，每 30 分钟更新天气缓存
 
 # JWT 配置
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5), # 5分钟过期
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=2), # 5分钟过期
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1), # 1天过期
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -161,7 +167,29 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'celery': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -184,3 +212,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# 图片上传配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+CORS_ALLOWED_ORIGINS = [config('WEATHER_CORS_ALLOWED_ORIGINS', default='*')]  # 前端地址
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ["authorization", "content-type"]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+CORS_ALLOW_CREDENTIALS = True

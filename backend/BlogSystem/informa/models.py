@@ -5,6 +5,9 @@ from django.core.validators import (
     # RegexValidator,
     FileExtensionValidator
 )
+from django.utils import timezone
+from django.conf import settings
+import os
 
 # Create your models here.
 # 天气缓存模型
@@ -49,3 +52,17 @@ class WeatherApiQuota(models.Model):
 
     def __str__(self):
         return f"{self.year}-{self.month:02d}: {self.used}/{self.limit}"
+    
+class DeletedMedia(models.Model):
+    file_path = models.CharField(max_length=255)
+    deleted_at = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    @classmethod
+    def clean_expired(cls, days=30):
+        expiration_date = timezone.now() - timezone.timedelta(days=days)
+        expired_objects = cls.objects.filter(deleted_at__lte=expiration_date)
+        for obj in expired_objects:
+            if os.path.exists(obj.file_path):
+                os.remove(obj.file_path)
+        expired_objects.delete()

@@ -8,7 +8,7 @@
 
 <script setup>
 import Background from '@/components/Background.vue'
-import Navbar from '@/components/homepage/navbar.vue'
+import Navbar from '@/components/homepage/Navbar.vue'
 import { RouterView } from 'vue-router'
 </script>
 

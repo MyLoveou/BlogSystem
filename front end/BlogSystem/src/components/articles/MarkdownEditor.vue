@@ -1,9 +1,5 @@
 <template>
   <section class="markdown-editor-wrapper">
-    <!-- 粒子背景 -->
-    <div class="particles" ref="particles"></div>
-
-    <!-- 工具栏 -->
     <nav class="toolbar">
       <button @click="wrapSelection('**', '**')" title="粗体">
         <i class="fas fa-bold"></i>
@@ -37,18 +33,32 @@
       </button>
     </nav>
 
-    <!-- 编辑-预览双栏 -->
+
+    <!-- 编辑-预览 - 图片查看三栏 -->
     <div class="editor-container">
-      <textarea
-        v-model="source"
-        @drop="onDrop"
-        @paste="onPaste"
-        @input="renderMd"
-        class="editor"
-        placeholder="开始写作吧 ~ 支持 ==高亮==、- [ ] 任务列表、表格、数学公式等"
-      ></textarea>
+      <!-- 左侧图片上传栏 -->
+      <aside class="image-panel">
+        <h4><i class="fas fa-images"></i> 图片仓库</h4>
+        <el-upload :http-request="customUpload" :before-upload="beforeUpload" :on-success="onImgSuccess" multiple>
+          <i class="fas fa-cloud-upload-alt" />
+          <div class="tip">拖拽或点击上传</div>
+        </el-upload>
+
+        <!-- 列表 -->
+        <ul class="img-list">
+          <li v-for="img in imageList" :key="img.image">
+            <img :src="img.image" />
+            <span>{{ img.name }}</span>
+            <button @click="copy(img.image)"><i class="fas fa-copy"></i></button>
+            <button @click="deleteImage(img.id)"><i class="fas fa-trash"></i></button>
+          </li>
+        </ul>
+      </aside>
+      <textarea v-model="source" @drop="onDrop" @paste="onPaste" @input="renderMd" class="editor"
+        placeholder="开始写作吧 ~ 支持 ==高亮==、- [ ] 任务列表、表格、数学公式等"></textarea>
 
       <article class="preview" v-html="html" ref="preview"></article>
+
     </div>
   </section>
 </template>
@@ -58,6 +68,7 @@ import { ref, computed, onMounted } from 'vue';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/atom-one-dark.css';
+import useImageUpload from '@/apis/useImageUpload.js'
 
 // 扩展插件
 import mark from 'markdown-it-mark';
@@ -91,12 +102,12 @@ import { useMarkdown } from '@/composables/useMarkdown';
 
 ## 数学公式
 
-行内公式：\(E = mc^2\)
+行内公式：$E = mc^2$
 
 块级公式：
-\[
+$$
 \int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}
-\]
+$$
 
 | 库名         | 作用           |
 |--------------|----------------|
@@ -115,7 +126,7 @@ const md = new MarkdownIt({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang }).value}</code></pre>`;
-      } catch {}
+      } catch { }
     }
     return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
   },
@@ -208,6 +219,7 @@ const renderMath = () => {
 /* 主逻辑 */
 onMounted(() => {
   renderMd();
+  fetchImages()
 });
 
 const renderMd = () => {
@@ -217,20 +229,31 @@ const renderMd = () => {
 
 /* 粒子背景 */
 onMounted(() => {
-  const particlesContainer = document.querySelector('.particles');
-  for (let i = 0; i < 30; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.width = particle.style.height = `${Math.random() * 10 + 3}px`;
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.top = `${Math.random() * 100}%`;
-    particle.style.background = ['#7a5af5', '#ff6b9c', '#00d0ff'][i % 3];
-    particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-    particlesContainer.appendChild(particle);
-  }
+  // const particlesContainer = document.querySelector('.particles');
+  // for (let i = 0; i < 30; i++) {
+  //   const particle = document.createElement('div');
+  //   particle.className = 'particle';
+  //   particle.style.width = particle.style.height = `${Math.random() * 10 + 3}px`;
+  //   particle.style.left = `${Math.random() * 100}%`;
+  //   particle.style.top = `${Math.random() * 100}%`;
+  //   particle.style.background = ['#7a5af5', '#ff6b9c', '#00d0ff'][i % 3];
+  //   particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+  //   particlesContainer.appendChild(particle);
+  // }
   // 初始化渲染
   renderMd();
 });
+
+
+import { ElMessage } from 'element-plus'
+
+const { customUpload, imageList, onImgSuccess, beforeUpload, fetchImages, deleteImage } = useImageUpload()
+
+// 复制到剪贴板
+const copy = (url) => {
+  navigator.clipboard.writeText(url)
+  ElMessage.success('已复制')
+}
 </script>
 
 <style scoped>
@@ -300,10 +323,10 @@ onMounted(() => {
 /* 编辑器和预览器样式 */
 .editor-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 200px 1fr 1fr;
   height: 70vh;
-  position: relative;
-  z-index: 1;
+  /* position: relative; */
+  /* z-index: 1; */
 }
 
 .editor,
@@ -330,7 +353,7 @@ onMounted(() => {
 }
 
 /* 数学公式样式 */
-.preview :not(pre) > .katex {
+.preview :not(pre)>.katex {
   display: inline-block !important;
   margin: 0 4px;
   vertical-align: middle;
@@ -341,14 +364,18 @@ onMounted(() => {
   margin: 1em 0;
   text-align: center;
 }
+
 /* 嵌套列表样式 - 修复的关键 */
-.preview ul, .preview ol {
+.preview ul,
+.preview ol {
   padding-left: 1.5em;
   margin: 1em 0;
 }
 
-.preview ul ul, .preview ol ol, 
-.preview ul ol, .preview ol ul {
+.preview ul ul,
+.preview ol ol,
+.preview ul ol,
+.preview ol ul {
   padding-left: 1.8em;
   margin: 0.5em 0;
 }
@@ -376,15 +403,86 @@ onMounted(() => {
 .preview ul ul ul li::before {
   background: var(--accent);
 }
-/* 响应式布局 */
+
+.image-panel {
+  background: rgba(15, 14, 23, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(122, 90, 245, 0.2);
+  border-left: none;
+  border-radius: 0 0 var(--border-radius) 0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 200px;
+  overflow-y: auto;
+}
+
+.image-panel h4 {
+  color: var(--accent);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.uploader {
+  border: 2px dashed var(--primary);
+  border-radius: 8px;
+  padding: 20px 5px;
+  text-align: center;
+  color: var(--gray);
+}
+
+.uploader:hover {
+  border-color: var(--accent);
+}
+
+.img-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.img-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.img-list img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.img-list span {
+  flex: 1;
+  font-size: 0.75rem;
+  color: var(--light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.img-list button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+/* 响应式增强：移动端隐藏侧边栏，改为抽屉 */
 @media (max-width: 768px) {
   .editor-container {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
   }
-  .editor,
-  .preview {
-    border-radius: 0;
+
+  .image-panel {
+    display: none;
+    /* 可用 <el-drawer> 触发 */
   }
 }
 </style>

@@ -7,7 +7,7 @@ from .views import (
 
 router = DefaultRouter()
 router.register('weathercache', WeatherCacheViewSet, basename='weathercache')
-router.register('imageupload', ImageUploadViewSet, basename='imageupload')
+router.register('images', ImageUploadViewSet, basename='images')
 
 
 urlpatterns = [

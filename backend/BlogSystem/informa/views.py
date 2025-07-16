@@ -1,10 +1,10 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import (
-   WeatherCache, ImageUpload,
+   WeatherCache, ImageUpload, DeletedMedia
 )
 from .serializers import (
    WeatherCacheSerializer,
@@ -98,3 +98,17 @@ class ImageUploadViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return ImageUpload.objects.all()
         return ImageUpload.objects.filter(uploaded_by=self.request.user)
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.uploaded_by and not request.user.is_staff:
+            return Response({"detail": "无权限删除"}, status=status.HTTP_403_FORBIDDEN)
+
+        # 将文件路径存入回收站
+        if instance.image:
+            DeletedMedia.objects.create(
+                file_path=instance.image.path,
+                user=request.user
+            )
+
+        self.perform_destroy(instance)
+        return Response({"detail": "删除成功"}, status=status.HTTP_200_OK)

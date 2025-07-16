@@ -4,7 +4,7 @@ from django.utils import timezone
 from .models import WeatherCache
 from django.conf import settings
 from datetime import timedelta
-import calendar
+# import calendar
 from datetime import date
 from django.db import transaction
 from .models import WeatherApiQuota
