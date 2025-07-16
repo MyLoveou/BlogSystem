@@ -8,7 +8,7 @@
 
 <script>
 import ProfileCard from './profileCard.vue'
-import CalendarWidget from './calendarWidget.vue'
+import CalendarWidget from './CalendarWidget.vue'
 import WeatherWidget from './weatherWidget.vue'
 
 export default {

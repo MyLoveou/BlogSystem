@@ -7,6 +7,7 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'articles', ArticleViewSet)
 router.register(r'tags', TagViewSet)
 router.register(r'pages', PageViewSet)
+router.register(r'friendlinks', FriendLinkViewSet)
 
 
 urlpatterns = [

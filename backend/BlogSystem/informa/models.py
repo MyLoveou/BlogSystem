@@ -34,3 +34,18 @@ class ImageUpload(models.Model):
     
     def __str__(self):
         return f"Image {self.id}"
+    
+
+# informa/models.py 末尾追加
+class WeatherApiQuota(models.Model):
+    year = models.PositiveSmallIntegerField()
+    month = models.PositiveSmallIntegerField()
+    used = models.PositiveIntegerField(default=0)
+    limit = models.PositiveIntegerField(default=1000)  # 每月上限
+
+    class Meta:
+        unique_together = ('year', 'month')
+        verbose_name = '天气 API 月度配额'
+
+    def __str__(self):
+        return f"{self.year}-{self.month:02d}: {self.used}/{self.limit}"
