@@ -1,0 +1,4 @@
+E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  VERSION = __import__('pkg_resources') \
+E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  VERSION = __import__('pkg_resources') \

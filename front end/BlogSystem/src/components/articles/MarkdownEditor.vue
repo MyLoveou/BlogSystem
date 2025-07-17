@@ -31,8 +31,42 @@
       <button @click="$refs.mdFileInput.click()" title="上传 .md">
         <i class="fas fa-file-upload"></i>
       </button>
+      <!-- 元数据编辑按钮 -->
+      <button @click="showMetaDialog = true" title="编辑元数据">
+        <i class="fas fa-tags"></i>
+      </button>
     </nav>
-
+     <!-- 元数据编辑对话框 -->
+    <el-dialog v-model="showMetaDialog" title="编辑文章元数据" width="500px">
+      <el-form label-width="80px">
+        <el-form-item label="分类">
+          <el-select
+            v-model="metaData.categories"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            placeholder="输入分类"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-select
+            v-model="metaData.tags"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            placeholder="输入标签"
+            style="width: 100%"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showMetaDialog = false">取消</el-button>
+        <el-button type="primary" @click="saveMetaData">保存</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 编辑-预览 - 图片查看三栏 -->
     <div class="editor-container">
@@ -43,6 +77,17 @@
           <i class="fas fa-cloud-upload-alt" />
           <div class="tip">拖拽或点击上传</div>
         </el-upload>
+        <!-- 显示元数据 -->
+        <div class="metadata-display" v-if="metaData.categories.length || metaData.tags.length">
+          <h5>分类</h5>
+          <div class="tag-list">
+            <el-tag v-for="cat in metaData.categories" :key="cat" size="small">{{ cat }}</el-tag>
+          </div>
+          <h5>标签</h5>
+          <div class="tag-list">
+            <el-tag v-for="tag in metaData.tags" :key="tag" type="info" size="small">{{ tag }}</el-tag>
+          </div>
+        </div>
 
         <!-- 列表 -->
         <ul class="img-list">
@@ -69,7 +114,7 @@ import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/atom-one-dark.css';
 import useImageUpload from '@/apis/useImageUpload.js'
-
+import yaml from 'js-yaml'
 // 扩展插件
 import mark from 'markdown-it-mark';
 import taskLists from 'markdown-it-task-lists';
@@ -82,7 +127,17 @@ import renderMathInElement from 'katex/contrib/auto-render/auto-render';
 // import 'katex/dist/katex.css'; // 别忘了样式
 
 // 初始 Markdown 内容
-const source = ref(`# Hello 星尘
+const source = ref(`---
+categories:
+  - 技术
+  - Vue
+tags:
+  - markdown
+  - 编辑器
+  - 元数据
+---
+
+# Hello 星尘
 
 > 在虚拟与现实之间寻找平衡 ✨
 
@@ -117,6 +172,15 @@ $$
 | katex        | 数学公式渲染   |
 `);
 
+// 元数据
+const metaData = ref({
+  categories: [],
+  tags: []
+})
+
+// 对话框显示状态
+const showMetaDialog = ref(false)
+
 // 配置 Markdown-it
 const md = new MarkdownIt({
   html: true,
@@ -136,8 +200,47 @@ const md = new MarkdownIt({
   .use(anchor) // 标题锚点
   .use(toc); // 目录
 
-// 渲染 Markdown
-const html = computed(() => md.render(source.value));
+// 渲染 Markdown（去除YAML部分）
+const html = computed(() => {
+  const content = source.value.replace(/^---[\s\S]*?---/, '').trim()
+  return md.render(content)
+});
+
+// 解析YAML元数据
+const parseMetaData = () => {
+  const yamlMatch = source.value.match(/^---\n([\s\S]*?)\n---/)
+  if (yamlMatch) {
+    try {
+      const parsed = yaml.load(yamlMatch[1])
+      metaData.value = {
+        categories: Array.isArray(parsed.categories) ? parsed.categories : [],
+        tags: Array.isArray(parsed.tags) ? parsed.tags : []
+      }
+    } catch (e) {
+      console.error('YAML解析失败:', e)
+    }
+  }
+}
+
+// 保存元数据到YAML
+const saveMetaData = () => {
+  const yamlStr = yaml.dump({
+    categories: metaData.value.categories,
+    tags: metaData.value.tags
+  }, { lineWidth: -1 })
+  
+  const yamlBlock = `---\n${yamlStr}---`
+  
+  // 检查是否已存在YAML块
+  if (/^---[\s\S]*?---/.test(source.value)) {
+    source.value = source.value.replace(/^---[\s\S]*?---/, yamlBlock)
+  } else {
+    source.value = `${yamlBlock}\n\n${source.value}`
+  }
+  
+  showMetaDialog.value = false
+}
+
 
 /* 工具栏功能 */
 const wrapSelection = (prefix, suffix) => {
@@ -218,7 +321,7 @@ const renderMath = () => {
 
 /* 主逻辑 */
 onMounted(() => {
-  renderMd();
+  parseMetaData()
   fetchImages()
 });
 
@@ -229,18 +332,6 @@ const renderMd = () => {
 
 /* 粒子背景 */
 onMounted(() => {
-  // const particlesContainer = document.querySelector('.particles');
-  // for (let i = 0; i < 30; i++) {
-  //   const particle = document.createElement('div');
-  //   particle.className = 'particle';
-  //   particle.style.width = particle.style.height = `${Math.random() * 10 + 3}px`;
-  //   particle.style.left = `${Math.random() * 100}%`;
-  //   particle.style.top = `${Math.random() * 100}%`;
-  //   particle.style.background = ['#7a5af5', '#ff6b9c', '#00d0ff'][i % 3];
-  //   particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-  //   particlesContainer.appendChild(particle);
-  // }
-  // 初始化渲染
   renderMd();
 });
 
@@ -275,6 +366,30 @@ const copy = (url) => {
   padding: 20px;
   font-family: 'Noto Sans SC', sans-serif;
   min-height: 80vh;
+}
+/* 元数据显示样式 */
+.metadata-display {
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(122, 90, 245, 0.1);
+  border-radius: 8px;
+}
+
+.metadata-display h5 {
+  margin: 5px 0;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.tag-list .el-tag {
+  margin: 2px;
 }
 
 .particles {
