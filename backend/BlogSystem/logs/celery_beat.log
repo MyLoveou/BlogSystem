@@ -1,22 +1,17 @@
 E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   VERSION = __import__('pkg_resources') \
-[2025-07-17 15:44:05,675: DEBUG/MainProcess] Setting default socket timeout to 30
-[2025-07-17 15:44:05,675: INFO/MainProcess] beat: Starting...
-[2025-07-17 15:44:05,701: DEBUG/MainProcess] Current schedule:
+[2025-07-17 16:35:01,707: DEBUG/MainProcess] Setting default socket timeout to 30
+[2025-07-17 16:35:01,707: INFO/MainProcess] beat: Starting...
+[2025-07-17 16:35:01,762: DEBUG/MainProcess] Current schedule:
 <ScheduleEntry: update-weather-cache informa.tasks.update_weather_caches() <crontab: */30 * * * * (m/h/dM/MY/d)>
 <ScheduleEntry: reset-weather-quota informa.tasks.reset_monthly_quota() <crontab: 0 0 1 * * (m/h/dM/MY/d)>
 <ScheduleEntry: clean-deleted-media informa.management.commands.clean_deleted_media.Command.handle() <crontab: 0 0 1 * * (m/h/dM/MY/d)>
-[2025-07-17 15:44:05,701: DEBUG/MainProcess] beat: Ticking with max interval->5.00 minutes
-[2025-07-17 15:44:05,706: INFO/MainProcess] Scheduler: Sending due task update-weather-cache (informa.tasks.update_weather_caches)
-[2025-07-17 15:44:05,713: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 15:44:05,723: DEBUG/MainProcess] informa.tasks.update_weather_caches sent. id->05d90be2-ba47-43e5-9134-76cdcfbc8c10
-[2025-07-17 15:44:05,723: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2025-07-17 15:49:05,724: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 15:49:05,729: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2025-07-17 15:54:05,730: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 15:54:05,734: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2025-07-17 15:59:05,735: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 15:59:05,740: DEBUG/MainProcess] beat: Waking up in 54.25 seconds.
-[2025-07-17 16:00:00,000: INFO/MainProcess] Scheduler: Sending due task update-weather-cache (informa.tasks.update_weather_caches)
-[2025-07-17 16:00:00,003: DEBUG/MainProcess] informa.tasks.update_weather_caches sent. id->2f575bdf-4e9a-4ef2-947b-8edbff301a90
-[2025-07-17 16:00:00,004: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+[2025-07-17 16:35:01,762: DEBUG/MainProcess] beat: Ticking with max interval->5.00 minutes
+[2025-07-17 16:35:01,768: INFO/MainProcess] Scheduler: Sending due task update-weather-cache (informa.tasks.update_weather_caches)
+[2025-07-17 16:35:01,776: DEBUG/MainProcess] beat: Synchronizing schedule...
+[2025-07-17 16:35:01,787: DEBUG/MainProcess] informa.tasks.update_weather_caches sent. id->0be6a606-7f92-4ebf-82cc-ae9793444cc8
+[2025-07-17 16:35:01,787: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+[2025-07-17 16:40:01,788: DEBUG/MainProcess] beat: Synchronizing schedule...
+[2025-07-17 16:40:01,793: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+[2025-07-17 16:45:01,794: DEBUG/MainProcess] beat: Synchronizing schedule...
+[2025-07-17 16:45:01,798: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.

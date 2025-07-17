@@ -35,7 +35,25 @@
       <button @click="showMetaDialog = true" title="编辑元数据">
         <i class="fas fa-tags"></i>
       </button>
+      <button @click="submitArticle" title="发布文章">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </nav>
+    <!-- 在toolbar下方添加 -->
+    <div class="article-meta">
+      <input 
+        v-model="article.title" 
+        placeholder="文章标题" 
+        class="title-input"
+        required
+      />
+      <textarea 
+        v-model="article.excerpt" 
+        placeholder="文章摘要（最多200字）" 
+        maxlength="200"
+        class="excerpt-input"
+      ></textarea>
+    </div>
      <!-- 元数据编辑对话框 -->
     <el-dialog v-model="showMetaDialog" title="编辑文章元数据" width="500px">
       <el-form label-width="80px">
@@ -109,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/atom-one-dark.css';
@@ -125,7 +143,7 @@ import 'katex/dist/katex.min.css';
 // import { renderMathInElement } from 'katex';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render';
 // import 'katex/dist/katex.css'; // 别忘了样式
-
+import { debounce } from 'lodash-es';
 // 初始 Markdown 内容
 const source = ref(`---
 categories:
@@ -335,6 +353,64 @@ onMounted(() => {
   renderMd();
 });
 
+import { postArticle } from '@/apis/articles';
+// 文章表单数据
+const article = ref({
+  title: '',
+  content: '',
+  html_content: '',
+  excerpt: '',
+  categories: [],
+  tags: [],
+  status: 'published'
+});
+
+// 提交文章
+const submitArticle = () => {
+    // 设置内容字段
+  article.value.content = source.value;
+  article.value.html_content = html.value;
+  // 前端验证
+  if (!article.value.title.trim()) {
+    ElMessage.error('请输入文章标题');
+    return;
+  }
+  if (!article.value.content.trim()) {
+    ElMessage.error('请输入文章内容');
+    return;
+  }
+  if (!article.value.excerpt.trim()) {
+    ElMessage.error('请输入文章摘要');
+    return;
+  }
+
+
+
+  // 提交请求
+  postArticle(article.value)
+    .then(() => {
+      ElMessage.success('文章上传成功！');
+      // 清空表单
+      article.value = {
+        title: '',
+        content: '',
+        html_content: '',
+        excerpt: '',
+        categories: [],
+        tags: [],
+        status: 'published'
+      };
+      source.value = '';
+    })
+    .catch((error) => {
+      // 处理错误
+      if (error.response && error.response.status === 400) {
+        ElMessage.error(`错误: ${error.response.data.error}`);
+      } else {
+        ElMessage.error('文章上传失败: ' + error.message);
+      }
+    });
+};
 
 import { ElMessage } from 'element-plus'
 
@@ -345,6 +421,10 @@ const copy = (url) => {
   navigator.clipboard.writeText(url)
   ElMessage.success('已复制')
 }
+// 改进：监听 source 的变化，实时解析
+watch(source, debounce(() => {
+  parseMetaData();        // 每当 Markdown 内容变化时重新解析元数据
+}, 300), { deep: true }); // deep: true 确保能检测到字符串内部的变化
 </script>
 
 <style scoped>
@@ -366,6 +446,7 @@ const copy = (url) => {
   padding: 20px;
   font-family: 'Noto Sans SC', sans-serif;
   min-height: 80vh;
+  overflow: hidden; /* 隐藏最外层滚动轴 */
 }
 /* 元数据显示样式 */
 .metadata-display {
@@ -398,7 +479,33 @@ const copy = (url) => {
   pointer-events: none;
   z-index: 0;
 }
+/* 在style部分添加 */
+.article-meta {
+  padding: 15px 20px;
+  background: rgba(15, 14, 23, 0.7);
+  border: 1px solid rgba(122, 90, 245, 0.2);
+  border-top: none;
+}
 
+.title-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--light);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.excerpt-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--gray);
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
 /* 工具栏样式 */
 .toolbar {
   display: flex;
@@ -440,6 +547,7 @@ const copy = (url) => {
   display: grid;
   grid-template-columns: 200px 1fr 1fr;
   height: 70vh;
+  height: calc(100vh - 180px); /* 动态计算高度，确保内容区域可滚动 */
   /* position: relative; */
   /* z-index: 1; */
 }

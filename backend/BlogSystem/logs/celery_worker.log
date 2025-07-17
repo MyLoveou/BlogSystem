@@ -1,18 +1,18 @@
 E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   VERSION = __import__('pkg_resources') \
-[2025-07-17 15:44:05,743: DEBUG/MainProcess] | Worker: Preparing bootsteps.
-[2025-07-17 15:44:05,744: DEBUG/MainProcess] | Worker: Building graph...
-[2025-07-17 15:44:05,745: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
-[2025-07-17 15:44:05,750: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
-[2025-07-17 15:44:05,750: DEBUG/MainProcess] | Consumer: Building graph...
-[2025-07-17 15:44:05,760: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Agent, Events, Heart, Mingle, Tasks, DelayedDelivery, Gossip, Control, event loop}
+[2025-07-17 16:35:01,828: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+[2025-07-17 16:35:01,830: DEBUG/MainProcess] | Worker: Building graph...
+[2025-07-17 16:35:01,830: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
+[2025-07-17 16:35:01,837: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+[2025-07-17 16:35:01,838: DEBUG/MainProcess] | Consumer: Building graph...
+[2025-07-17 16:35:01,850: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, DelayedDelivery, Control, Heart, Agent, Gossip, event loop}
  
  -------------- celery@LZD-20250429OYI v5.5.3 (immunity)
 --- ***** ----- 
--- ******* ---- Windows-11-10.0.26100-SP0 2025-07-17 15:44:05
+-- ******* ---- Windows-11-10.0.26100-SP0 2025-07-17 16:35:01
 - *** --- * --- 
 - ** ---------- [config]
-- ** ---------- .> app:         BlogSystem:0x272a4251e50
+- ** ---------- .> app:         BlogSystem:0x22b0d452120
 - ** ---------- .> transport:   redis://localhost:6379/0
 - ** ---------- .> results:     redis://localhost:6379/0
 - *** --- * --- .> concurrency: 20 (gevent)
@@ -26,80 +26,53 @@ E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:
   . informa.tasks.reset_monthly_quota
   . informa.tasks.update_weather_caches
 
-[2025-07-17 15:44:05,810: DEBUG/MainProcess] | Worker: Starting Pool
-[2025-07-17 15:44:05,810: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:05,810: DEBUG/MainProcess] | Worker: Starting Consumer
-[2025-07-17 15:44:05,810: DEBUG/MainProcess] | Consumer: Starting Connection
-[2025-07-17 15:44:05,818: INFO/MainProcess] Connected to redis://localhost:6379/0
-[2025-07-17 15:44:05,818: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:05,818: DEBUG/MainProcess] | Consumer: Starting Events
-[2025-07-17 15:44:05,846: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:05,846: DEBUG/MainProcess] | Consumer: Starting Heart
-[2025-07-17 15:44:05,848: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:05,848: DEBUG/MainProcess] | Consumer: Starting Mingle
-[2025-07-17 15:44:05,848: INFO/MainProcess] mingle: searching for neighbors
-[2025-07-17 15:44:06,893: INFO/MainProcess] mingle: all alone
-[2025-07-17 15:44:06,893: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:06,893: DEBUG/MainProcess] | Consumer: Starting Tasks
-[2025-07-17 15:44:06,895: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:06,895: DEBUG/MainProcess] | Consumer: Starting Gossip
-[2025-07-17 15:44:06,899: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:06,899: DEBUG/MainProcess] | Consumer: Starting Control
-[2025-07-17 15:44:06,899: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 15:44:06,899: DEBUG/MainProcess] | Consumer: Starting event loop
-[2025-07-17 15:44:06,899: INFO/MainProcess] celery@LZD-20250429OYI ready.
-[2025-07-17 15:44:06,902: INFO/MainProcess] pidbox: Connected to redis://localhost:6379/0.
-[2025-07-17 15:44:09,869: INFO/MainProcess] Task informa.tasks.update_weather_caches[05d90be2-ba47-43e5-9134-76cdcfbc8c10] received
-[2025-07-17 15:44:09,870: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x00000272A41C7060> (args:('informa.tasks.update_weather_caches', '05d90be2-ba47-43e5-9134-76cdcfbc8c10', {'lang': 'py', 'task': 'informa.tasks.update_weather_caches', 'id': '05d90be2-ba47-43e5-9134-76cdcfbc8c10', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '05d90be2-ba47-43e5-9134-76cdcfbc8c10', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen73208@LZD-20250429OYI', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '05d90be2-ba47-43e5-9134-76cdcfbc8c10', 'reply_to': '43c3d623-636e-3a6e-9dd8-02ab0af721e5', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': 'ffc87f71-4e86-44c8-be18-0a430a5dac5b'}, 'reply_to': '43c3d623-636e-3a6e-9dd8-02ab0af721e5', 'correlation_id': '05d90be2-ba47-43e5-9134-76cdcfbc8c10', 'hostname': 'celery@LZD-20250429OYI', 'delivery_info':... kwargs:{})
-[2025-07-17 15:44:10,023: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Beijing' LIMIT 21; args=('Beijing',); alias=default
-[2025-07-17 15:44:10,024: DEBUG/MainProcess] (0.015) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 15:44:10,025: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 15:44:10,025: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 15:44:10,026: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 9, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 9, 1000, 1); alias=default
-[2025-07-17 15:44:10,038: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 15:44:10,178: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Shanghai' LIMIT 21; args=('Shanghai',); alias=default
-[2025-07-17 15:44:10,179: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 15:44:10,179: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 15:44:10,179: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 15:44:10,180: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 10, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 10, 1000, 1); alias=default
-[2025-07-17 15:44:10,181: DEBUG/MainProcess] (0.016) COMMIT; args=None; alias=default
-[2025-07-17 15:44:10,308: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'New York' LIMIT 21; args=('New York',); alias=default
-[2025-07-17 15:44:10,308: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 15:44:10,309: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 15:44:10,309: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 15:44:10,310: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 11, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 11, 1000, 1); alias=default
-[2025-07-17 15:44:10,311: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 15:44:10,460: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'WuHan' LIMIT 21; args=('WuHan',); alias=default
-[2025-07-17 15:44:10,461: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 15:44:10,461: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 15:44:10,461: DEBUG/MainProcess] (0.016) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 15:44:10,463: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 12, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 12, 1000, 1); alias=default
-[2025-07-17 15:44:10,463: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 15:44:10,634: INFO/MainProcess] Task informa.tasks.update_weather_caches[05d90be2-ba47-43e5-9134-76cdcfbc8c10] succeeded in 0.7659999999741558s: None
-[2025-07-17 16:00:00,004: INFO/MainProcess] Task informa.tasks.update_weather_caches[2f575bdf-4e9a-4ef2-947b-8edbff301a90] received
-[2025-07-17 16:00:00,004: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x00000272A41C7060> (args:('informa.tasks.update_weather_caches', '2f575bdf-4e9a-4ef2-947b-8edbff301a90', {'lang': 'py', 'task': 'informa.tasks.update_weather_caches', 'id': '2f575bdf-4e9a-4ef2-947b-8edbff301a90', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '2f575bdf-4e9a-4ef2-947b-8edbff301a90', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen73208@LZD-20250429OYI', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '2f575bdf-4e9a-4ef2-947b-8edbff301a90', 'reply_to': '43c3d623-636e-3a6e-9dd8-02ab0af721e5', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': '52a6d0c4-a0ee-46ce-a9b7-1d0c5f05be68'}, 'reply_to': '43c3d623-636e-3a6e-9dd8-02ab0af721e5', 'correlation_id': '2f575bdf-4e9a-4ef2-947b-8edbff301a90', 'hostname': 'celery@LZD-20250429OYI', 'delivery_info':... kwargs:{})
-[2025-07-17 16:00:00,264: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Beijing' LIMIT 21; args=('Beijing',); alias=default
-[2025-07-17 16:00:00,266: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:00:00,266: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:00:00,267: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:00:00,268: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 13, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 13, 1000, 1); alias=default
-[2025-07-17 16:00:00,269: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:00:13,190: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Shanghai' LIMIT 21; args=('Shanghai',); alias=default
-[2025-07-17 16:00:13,190: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:00:13,190: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:00:13,190: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:00:13,191: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 14, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 14, 1000, 1); alias=default
-[2025-07-17 16:00:13,192: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:00:14,618: DEBUG/MainProcess] (0.015) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'New York' LIMIT 21; args=('New York',); alias=default
-[2025-07-17 16:00:14,618: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:00:14,618: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:00:14,619: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:00:14,620: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 15, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 15, 1000, 1); alias=default
-[2025-07-17 16:00:14,630: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:00:14,804: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'WuHan' LIMIT 21; args=('WuHan',); alias=default
-[2025-07-17 16:00:14,805: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:00:14,805: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:00:14,805: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:00:14,807: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 16, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 16, 1000, 1); alias=default
-[2025-07-17 16:00:14,808: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:00:16,207: INFO/MainProcess] Task informa.tasks.update_weather_caches[2f575bdf-4e9a-4ef2-947b-8edbff301a90] succeeded in 16.20299999997951s: None
+[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Worker: Starting Pool
+[2025-07-17 16:35:01,910: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Worker: Starting Consumer
+[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Consumer: Starting Connection
+[2025-07-17 16:35:01,920: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2025-07-17 16:35:01,920: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:01,920: DEBUG/MainProcess] | Consumer: Starting Events
+[2025-07-17 16:35:01,922: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:01,924: DEBUG/MainProcess] | Consumer: Starting Mingle
+[2025-07-17 16:35:01,924: INFO/MainProcess] mingle: searching for neighbors
+[2025-07-17 16:35:02,935: INFO/MainProcess] mingle: all alone
+[2025-07-17 16:35:02,935: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:02,935: DEBUG/MainProcess] | Consumer: Starting Tasks
+[2025-07-17 16:35:02,938: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:02,938: DEBUG/MainProcess] | Consumer: Starting Control
+[2025-07-17 16:35:02,938: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:02,938: DEBUG/MainProcess] | Consumer: Starting Heart
+[2025-07-17 16:35:02,940: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:02,941: DEBUG/MainProcess] | Consumer: Starting Gossip
+[2025-07-17 16:35:02,941: INFO/MainProcess] pidbox: Connected to redis://localhost:6379/0.
+[2025-07-17 16:35:02,946: DEBUG/MainProcess] ^-- substep ok
+[2025-07-17 16:35:02,946: DEBUG/MainProcess] | Consumer: Starting event loop
+[2025-07-17 16:35:02,947: INFO/MainProcess] celery@LZD-20250429OYI ready.
+[2025-07-17 16:35:03,215: INFO/MainProcess] Task informa.tasks.update_weather_caches[0be6a606-7f92-4ebf-82cc-ae9793444cc8] received
+[2025-07-17 16:35:03,216: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x0000022B0D3BF060> (args:('informa.tasks.update_weather_caches', '0be6a606-7f92-4ebf-82cc-ae9793444cc8', {'lang': 'py', 'task': 'informa.tasks.update_weather_caches', 'id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen24080@LZD-20250429OYI', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'reply_to': 'f3c2c0bc-f9a1-3f45-b849-2ee8f5e7acd5', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': 'f404881b-ba35-4a07-b887-c260a0cf2f39'}, 'reply_to': 'f3c2c0bc-f9a1-3f45-b849-2ee8f5e7acd5', 'correlation_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'hostname': 'celery@LZD-20250429OYI', 'delivery_info':... kwargs:{})
+[2025-07-17 16:35:03,379: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Beijing' LIMIT 21; args=('Beijing',); alias=default
+[2025-07-17 16:35:03,380: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
+[2025-07-17 16:35:03,381: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
+[2025-07-17 16:35:03,381: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
+[2025-07-17 16:35:03,382: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 21, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 21, 1000, 1); alias=default
+[2025-07-17 16:35:03,383: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
+[2025-07-17 16:35:03,551: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Shanghai' LIMIT 21; args=('Shanghai',); alias=default
+[2025-07-17 16:35:03,552: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
+[2025-07-17 16:35:03,552: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
+[2025-07-17 16:35:03,553: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
+[2025-07-17 16:35:03,553: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 22, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 22, 1000, 1); alias=default
+[2025-07-17 16:35:03,554: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
+[2025-07-17 16:35:03,701: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'New York' LIMIT 21; args=('New York',); alias=default
+[2025-07-17 16:35:03,701: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
+[2025-07-17 16:35:03,702: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
+[2025-07-17 16:35:03,702: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
+[2025-07-17 16:35:03,703: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 23, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 23, 1000, 1); alias=default
+[2025-07-17 16:35:03,705: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
+[2025-07-17 16:35:03,847: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'WuHan' LIMIT 21; args=('WuHan',); alias=default
+[2025-07-17 16:35:03,847: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
+[2025-07-17 16:35:03,848: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
+[2025-07-17 16:35:03,849: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
+[2025-07-17 16:35:03,849: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 24, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 24, 1000, 1); alias=default
+[2025-07-17 16:35:03,850: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
+[2025-07-17 16:35:04,012: INFO/MainProcess] Task informa.tasks.update_weather_caches[0be6a606-7f92-4ebf-82cc-ae9793444cc8] succeeded in 0.7969999999913853s: None
