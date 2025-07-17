@@ -1,5 +1,5 @@
 <script setup>
-import MarkdownEditor from '@/components/articles/MarkdownEditor.vue'
+import MarkdownEditor from '@/components/articles/index.vue'
 </script>
 
 <template>
