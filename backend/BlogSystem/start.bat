@@ -33,10 +33,10 @@ echo [BlogSystem] 启动 Celery Beat ...
 start /B "" "%VENV_PYTHON%" -m celery -A BlogSystem beat -l info ^
     > "%PROJECT_DIR%logs\celery_beat.log" 2>&1
 
-@REM :: 7. Django
-@REM echo [BlogSystem] 启动 Django ...
-@REM start /B "" "%VENV_PYTHON%" manage.py runserver 0.0.0.0:8000 ^
-@REM     > "%PROJECT_DIR%logs\django.log" 2>&1
+:: 7. Django
+echo [BlogSystem] 启动 Django ...
+start /B "" "%VENV_PYTHON%" manage.py runserver 0.0.0.0:8000 ^
+    > "%PROJECT_DIR%logs\django.log" 2>&1
 
 echo.
 echo [BlogSystem] 所有服务已后台启动！

@@ -1,17 +1,133 @@
 E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   VERSION = __import__('pkg_resources') \
-[2025-07-17 16:35:01,707: DEBUG/MainProcess] Setting default socket timeout to 30
-[2025-07-17 16:35:01,707: INFO/MainProcess] beat: Starting...
-[2025-07-17 16:35:01,762: DEBUG/MainProcess] Current schedule:
-<ScheduleEntry: update-weather-cache informa.tasks.update_weather_caches() <crontab: */30 * * * * (m/h/dM/MY/d)>
-<ScheduleEntry: reset-weather-quota informa.tasks.reset_monthly_quota() <crontab: 0 0 1 * * (m/h/dM/MY/d)>
-<ScheduleEntry: clean-deleted-media informa.management.commands.clean_deleted_media.Command.handle() <crontab: 0 0 1 * * (m/h/dM/MY/d)>
-[2025-07-17 16:35:01,762: DEBUG/MainProcess] beat: Ticking with max interval->5.00 minutes
-[2025-07-17 16:35:01,768: INFO/MainProcess] Scheduler: Sending due task update-weather-cache (informa.tasks.update_weather_caches)
-[2025-07-17 16:35:01,776: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 16:35:01,787: DEBUG/MainProcess] informa.tasks.update_weather_caches sent. id->0be6a606-7f92-4ebf-82cc-ae9793444cc8
-[2025-07-17 16:35:01,787: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2025-07-17 16:40:01,788: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 16:40:01,793: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2025-07-17 16:45:01,794: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2025-07-17 16:45:01,798: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+Traceback (most recent call last):
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+                       ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "E:\项目\个人博客开发\backend\BlogSystem\BlogSystem\urls.py", line 32, in <module>
+    path("api/", include("articles.urls")),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'articles'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\__main__.py", line 19, in <module>
+    main()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\__main__.py", line 15, in main
+    sys.exit(_main())
+             ^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\celery.py", line 231, in main
+    return celery(auto_envvar_prefix="CELERY")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1442, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1363, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1830, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1226, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 794, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\base.py", line 135, in caller
+    return f(ctx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\beat.py", line 72, in beat
+    return beat().run()
+           ^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\apps\beat.py", line 82, in run
+    self.init_loader()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\apps\beat.py", line 132, in init_loader
+    self.app.loader.init_worker()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\loaders\base.py", line 110, in init_worker
+    self.import_default_modules()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\loaders\base.py", line 104, in import_default_modules
+    raise response
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\utils\dispatch\signal.py", line 280, in send
+    response = receiver(signal=self, sender=sender, **named)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\fixups\django.py", line 101, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\fixups\django.py", line 141, in validate_models
+    run_checks()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\registry.py", line 89, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\urls.py", line 138, in check_custom_error_handlers
+    path = getattr(resolver.urlconf_module, "handler%s" % status_code)
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "E:\项目\个人博客开发\backend\BlogSystem\BlogSystem\urls.py", line 32, in <module>
+    path("api/", include("articles.urls")),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'articles'
+celery beat v5.5.3 (immunity) is starting.

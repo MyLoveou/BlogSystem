@@ -1,6 +1,6 @@
-[76472] 17 Jul 16:34:58.874 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
-[76472] 17 Jul 16:34:58.874 # Redis version=5.0.14.1, bits=64, commit=ec77f72d, modified=0, pid=76472, just started
-[76472] 17 Jul 16:34:58.874 # Warning: no config file specified, using the default config. In order to specify a config file use d:\software\redis-x64-5.0.14.1\redis-server.exe /path/to/redis.conf
-[76472] 17 Jul 16:34:58.876 * Running mode=standalone, port=6379.
-[76472] 17 Jul 16:34:58.876 # Server initialized
-[76472] 17 Jul 16:34:58.876 * Ready to accept connections
+[88560] 18 Jul 14:24:42.021 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+[88560] 18 Jul 14:24:42.021 # Redis version=5.0.14.1, bits=64, commit=ec77f72d, modified=0, pid=88560, just started
+[88560] 18 Jul 14:24:42.021 # Warning: no config file specified, using the default config. In order to specify a config file use d:\software\redis-x64-5.0.14.1\redis-server.exe /path/to/redis.conf
+[88560] 18 Jul 14:24:42.024 * Running mode=standalone, port=6379.
+[88560] 18 Jul 14:24:42.024 # Server initialized
+[88560] 18 Jul 14:24:42.024 * Ready to accept connections

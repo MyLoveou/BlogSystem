@@ -1,78 +1,97 @@
 E:\项目\个人博客开发\backend\.venv\Lib\site-packages\shortuuidfield\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
   VERSION = __import__('pkg_resources') \
-[2025-07-17 16:35:01,828: DEBUG/MainProcess] | Worker: Preparing bootsteps.
-[2025-07-17 16:35:01,830: DEBUG/MainProcess] | Worker: Building graph...
-[2025-07-17 16:35:01,830: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
-[2025-07-17 16:35:01,837: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
-[2025-07-17 16:35:01,838: DEBUG/MainProcess] | Consumer: Building graph...
-[2025-07-17 16:35:01,850: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, DelayedDelivery, Control, Heart, Agent, Gossip, event loop}
- 
- -------------- celery@LZD-20250429OYI v5.5.3 (immunity)
---- ***** ----- 
--- ******* ---- Windows-11-10.0.26100-SP0 2025-07-17 16:35:01
-- *** --- * --- 
-- ** ---------- [config]
-- ** ---------- .> app:         BlogSystem:0x22b0d452120
-- ** ---------- .> transport:   redis://localhost:6379/0
-- ** ---------- .> results:     redis://localhost:6379/0
-- *** --- * --- .> concurrency: 20 (gevent)
--- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
---- ***** ----- 
- -------------- [queues]
-                .> celery           exchange=celery(direct) key=celery
-                
-
-[tasks]
-  . informa.tasks.reset_monthly_quota
-  . informa.tasks.update_weather_caches
-
-[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Worker: Starting Pool
-[2025-07-17 16:35:01,910: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Worker: Starting Consumer
-[2025-07-17 16:35:01,910: DEBUG/MainProcess] | Consumer: Starting Connection
-[2025-07-17 16:35:01,920: INFO/MainProcess] Connected to redis://localhost:6379/0
-[2025-07-17 16:35:01,920: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:01,920: DEBUG/MainProcess] | Consumer: Starting Events
-[2025-07-17 16:35:01,922: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:01,924: DEBUG/MainProcess] | Consumer: Starting Mingle
-[2025-07-17 16:35:01,924: INFO/MainProcess] mingle: searching for neighbors
-[2025-07-17 16:35:02,935: INFO/MainProcess] mingle: all alone
-[2025-07-17 16:35:02,935: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:02,935: DEBUG/MainProcess] | Consumer: Starting Tasks
-[2025-07-17 16:35:02,938: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:02,938: DEBUG/MainProcess] | Consumer: Starting Control
-[2025-07-17 16:35:02,938: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:02,938: DEBUG/MainProcess] | Consumer: Starting Heart
-[2025-07-17 16:35:02,940: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:02,941: DEBUG/MainProcess] | Consumer: Starting Gossip
-[2025-07-17 16:35:02,941: INFO/MainProcess] pidbox: Connected to redis://localhost:6379/0.
-[2025-07-17 16:35:02,946: DEBUG/MainProcess] ^-- substep ok
-[2025-07-17 16:35:02,946: DEBUG/MainProcess] | Consumer: Starting event loop
-[2025-07-17 16:35:02,947: INFO/MainProcess] celery@LZD-20250429OYI ready.
-[2025-07-17 16:35:03,215: INFO/MainProcess] Task informa.tasks.update_weather_caches[0be6a606-7f92-4ebf-82cc-ae9793444cc8] received
-[2025-07-17 16:35:03,216: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x0000022B0D3BF060> (args:('informa.tasks.update_weather_caches', '0be6a606-7f92-4ebf-82cc-ae9793444cc8', {'lang': 'py', 'task': 'informa.tasks.update_weather_caches', 'id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': '{}', 'origin': 'gen24080@LZD-20250429OYI', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'reply_to': 'f3c2c0bc-f9a1-3f45-b849-2ee8f5e7acd5', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': 'f404881b-ba35-4a07-b887-c260a0cf2f39'}, 'reply_to': 'f3c2c0bc-f9a1-3f45-b849-2ee8f5e7acd5', 'correlation_id': '0be6a606-7f92-4ebf-82cc-ae9793444cc8', 'hostname': 'celery@LZD-20250429OYI', 'delivery_info':... kwargs:{})
-[2025-07-17 16:35:03,379: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Beijing' LIMIT 21; args=('Beijing',); alias=default
-[2025-07-17 16:35:03,380: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:35:03,381: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:35:03,381: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:35:03,382: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 21, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 21, 1000, 1); alias=default
-[2025-07-17 16:35:03,383: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:35:03,551: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'Shanghai' LIMIT 21; args=('Shanghai',); alias=default
-[2025-07-17 16:35:03,552: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:35:03,552: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:35:03,553: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:35:03,553: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 22, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 22, 1000, 1); alias=default
-[2025-07-17 16:35:03,554: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:35:03,701: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'New York' LIMIT 21; args=('New York',); alias=default
-[2025-07-17 16:35:03,701: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:35:03,702: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:35:03,702: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:35:03,703: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 23, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 23, 1000, 1); alias=default
-[2025-07-17 16:35:03,705: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:35:03,847: DEBUG/MainProcess] (0.000) SELECT "informa_weathercache"."id", "informa_weathercache"."location", "informa_weathercache"."data", "informa_weathercache"."last_updated", "informa_weathercache"."expires_at" FROM "informa_weathercache" WHERE "informa_weathercache"."location" = 'WuHan' LIMIT 21; args=('WuHan',); alias=default
-[2025-07-17 16:35:03,847: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE ("informa_weatherapiquota"."month" = 7 AND "informa_weatherapiquota"."year" = 2025) LIMIT 21; args=(7, 2025); alias=default
-[2025-07-17 16:35:03,848: DEBUG/MainProcess] (0.000) BEGIN; args=None; alias=default
-[2025-07-17 16:35:03,849: DEBUG/MainProcess] (0.000) SELECT "informa_weatherapiquota"."id", "informa_weatherapiquota"."year", "informa_weatherapiquota"."month", "informa_weatherapiquota"."used", "informa_weatherapiquota"."limit" FROM "informa_weatherapiquota" WHERE "informa_weatherapiquota"."id" = 1 LIMIT 21; args=(1,); alias=default
-[2025-07-17 16:35:03,849: DEBUG/MainProcess] (0.000) UPDATE "informa_weatherapiquota" SET "year" = 2025, "month" = 7, "used" = 24, "limit" = 1000 WHERE "informa_weatherapiquota"."id" = 1; args=(2025, 7, 24, 1000, 1); alias=default
-[2025-07-17 16:35:03,850: DEBUG/MainProcess] (0.000) COMMIT; args=None; alias=default
-[2025-07-17 16:35:04,012: INFO/MainProcess] Task informa.tasks.update_weather_caches[0be6a606-7f92-4ebf-82cc-ae9793444cc8] succeeded in 0.7969999999913853s: None
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\__main__.py", line 19, in <module>
+    main()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\__main__.py", line 15, in main
+    sys.exit(_main())
+             ^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\celery.py", line 231, in main
+    return celery(auto_envvar_prefix="CELERY")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1442, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1363, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1830, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 1226, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\core.py", line 794, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\click\decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\base.py", line 135, in caller
+    return f(ctx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\bin\worker.py", line 348, in worker
+    worker = app.Worker(
+             ^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\worker\worker.py", line 94, in __init__
+    self.app.loader.init_worker()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\loaders\base.py", line 110, in init_worker
+    self.import_default_modules()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\loaders\base.py", line 104, in import_default_modules
+    raise response
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\utils\dispatch\signal.py", line 280, in send
+    response = receiver(signal=self, sender=sender, **named)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\fixups\django.py", line 101, in on_import_modules
+    self.worker_fixup.validate_models()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\celery\fixups\django.py", line 141, in validate_models
+    run_checks()
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\registry.py", line 89, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\urls.py", line 44, in check_url_namespaces_unique
+    all_namespaces = _load_all_namespaces(resolver)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\core\checks\urls.py", line 63, in _load_all_namespaces
+    url_patterns = getattr(resolver, "url_patterns", [])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\resolvers.py", line 718, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+                       ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "E:\项目\个人博客开发\backend\BlogSystem\BlogSystem\urls.py", line 32, in <module>
+    path("api/", include("articles.urls")),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\项目\个人博客开发\backend\.venv\Lib\site-packages\django\urls\conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Software\anaconda3\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'articles'

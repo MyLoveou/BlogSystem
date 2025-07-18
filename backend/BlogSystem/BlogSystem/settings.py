@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "acticles",
+    "articles",
     "system",
     "informa",
 ]

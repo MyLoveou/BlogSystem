@@ -41,43 +41,23 @@
     </nav>
     <!-- 在toolbar下方添加 -->
     <div class="article-meta">
-      <input 
-        v-model="article.title" 
-        placeholder="文章标题" 
-        class="title-input"
-        required
-      />
-      <textarea 
-        v-model="article.excerpt" 
-        placeholder="文章摘要（最多200字）" 
-        maxlength="200"
-        class="excerpt-input"
-      ></textarea>
+      <input v-model="article.title" placeholder="文章标题" class="title-input" required />
+      <textarea v-model="article.excerpt" placeholder="文章摘要（最多200字）" maxlength="200" class="excerpt-input"></textarea>
     </div>
-     <!-- 元数据编辑对话框 -->
+    <!-- 元数据编辑对话框 -->
     <el-dialog v-model="showMetaDialog" title="编辑文章元数据" width="500px">
       <el-form label-width="80px">
         <el-form-item label="分类">
-          <el-select
-            v-model="metaData.categories"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            placeholder="输入分类"
-            style="width: 100%"
-          />
+          <el-select v-model="metaData.categories" multiple filterable allow-create default-first-option
+            placeholder="输入分类" style="width: 100%"> 
+            <el-option v-for="c in allCategories" :key="c" :label="c" :value="c" />
+          </el-select>
         </el-form-item>
         <el-form-item label="标签">
-          <el-select
-            v-model="metaData.tags"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            placeholder="输入标签"
-            style="width: 100%"
-          />
+          <el-select v-model="metaData.tags" multiple filterable allow-create default-first-option placeholder="输入标签"
+            style="width: 100%">
+            <el-option v-for="t in allTags" :key="t" :label="t" :value="t" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -86,43 +66,42 @@
       </template>
     </el-dialog>
 
-    <!-- 编辑-预览 - 图片查看三栏 -->
+    <!-- ===================== 新布局：左右两栏 + 分隔线 ===================== -->
     <div class="editor-container">
-      <!-- 左侧图片上传栏 -->
-      <aside class="image-panel">
-        <h4><i class="fas fa-images"></i> 图片仓库</h4>
-        <el-upload :http-request="customUpload" :before-upload="beforeUpload" :on-success="onImgSuccess" multiple>
-          <i class="fas fa-cloud-upload-alt" />
+      <!-- 左侧编辑器 -->
+      <textarea v-model="source" @drop="onDrop" @paste="onPaste" @input="renderMd" class="editor"
+        placeholder="开始写作吧 ~" />
+      <!-- 可拖拽分隔线 -->
+      <div class="split-line" @mousedown="startDrag"></div>
+      <!-- 右侧预览 -->
+      <article class="preview" v-html="html" ref="preview"></article>
+    </div>
+
+    <!-- ===================== 图片仓库抽屉 ===================== -->
+    <el-drawer v-model="showDrawer" title="图片仓库" direction="rtl" size="280px">
+      <aside class="image-panel-drawer">
+        <el-upload :http-request="customUpload" :before-upload="beforeUpload" :on-success="onImgSuccess" multiple drag>
+          <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:var(--accent)" />
           <div class="tip">拖拽或点击上传</div>
         </el-upload>
-        <!-- 显示元数据 -->
-        <div class="metadata-display" v-if="metaData.categories.length || metaData.tags.length">
-          <h5>分类</h5>
-          <div class="tag-list">
-            <el-tag v-for="cat in metaData.categories" :key="cat" size="small">{{ cat }}</el-tag>
-          </div>
-          <h5>标签</h5>
-          <div class="tag-list">
-            <el-tag v-for="tag in metaData.tags" :key="tag" type="info" size="small">{{ tag }}</el-tag>
-          </div>
-        </div>
 
-        <!-- 列表 -->
         <ul class="img-list">
           <li v-for="img in imageList" :key="img.image">
             <img :src="img.image" />
             <span>{{ img.name }}</span>
-            <button @click="copy(img.image)"><i class="fas fa-copy"></i></button>
-            <button @click="deleteImage(img.id)"><i class="fas fa-trash"></i></button>
+            <div class="img-actions">
+              <button @click="copy(img.image)"><i class="fas fa-copy" /></button>
+              <button @click="deleteImage(img.id)"><i class="fas fa-trash" /></button>
+            </div>
           </li>
         </ul>
       </aside>
-      <textarea v-model="source" @drop="onDrop" @paste="onPaste" @input="renderMd" class="editor"
-        placeholder="开始写作吧 ~ 支持 ==高亮==、- [ ] 任务列表、表格、数学公式等"></textarea>
+    </el-drawer>
 
-      <article class="preview" v-html="html" ref="preview"></article>
-
-    </div>
+    <!-- 右下角唤起图片仓库的悬浮按钮 -->
+    <el-button circle class="float-img-btn" @click="showDrawer = true">
+      <i class="fas fa-images" />
+    </el-button>
   </section>
 </template>
 
@@ -144,6 +123,25 @@ import 'katex/dist/katex.min.css';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render';
 // import 'katex/dist/katex.css'; // 别忘了样式
 import { debounce } from 'lodash-es';
+import { postArticle, getCategoryList, getTagList, createCategory, createTag } from '@/apis/articles'
+
+// 统一把“本地字符串数组”与“后端返回数组”比对，对缺失项调用创建接口
+const ensureBackendItems = async ( localArr, remoteArr, createFn ) => {
+  // console.log(localArr)
+  const remoteNames = new Set(remoteArr.map(r => r.name))
+  const toCreate = localArr.filter(name => !remoteNames.has(name))
+  console.log(toCreate)
+
+  // 并发创建
+  const created = await Promise.all(
+    toCreate.map(name => createFn(name).then(res => res.data))
+  )
+  // 合并：已有 + 新建
+  return [
+    ...remoteArr.filter(r => localArr.includes(r.name)),
+    ...created
+  ]
+}
 // 初始 Markdown 内容
 const source = ref(`---
 categories:
@@ -241,21 +239,34 @@ const parseMetaData = () => {
 }
 
 // 保存元数据到YAML
-const saveMetaData = () => {
+const saveMetaData = async () => {
+
+  // 1. 拿到用户最终选择/输入的数组（包含新建）
+  const localCats = metaData.value.categories
+  const localTags = metaData.value.tags
+
+  // 2. 与后端比对，新建没有的
+  const finalCats = await ensureBackendItems(localCats, allCategories.value, createCategory)
+  const finalTags = await ensureBackendItems(localTags, allTags.value, createTag)
+  console.log(finalCats, finalTags, 1)
+
+  // 3. 回写到 article
+  article.value.categories = finalCats.map(c => c.name)
+  article.value.tags = finalTags.map(t => t.name)
   const yamlStr = yaml.dump({
     categories: metaData.value.categories,
     tags: metaData.value.tags
   }, { lineWidth: -1 })
-  
+
   const yamlBlock = `---\n${yamlStr}---`
-  
+
   // 检查是否已存在YAML块
   if (/^---[\s\S]*?---/.test(source.value)) {
     source.value = source.value.replace(/^---[\s\S]*?---/, yamlBlock)
   } else {
     source.value = `${yamlBlock}\n\n${source.value}`
   }
-  
+
   showMetaDialog.value = false
 }
 
@@ -336,11 +347,17 @@ const renderMath = () => {
     ]
   });
 };
-
+const allCategories = ref([])
+const allTags = ref([])
 /* 主逻辑 */
-onMounted(() => {
+onMounted(async () => {
   parseMetaData()
   fetchImages()
+  renderMd()
+  const [cats, tags] = await Promise.all([getCategoryList(), getTagList()])
+  console.log(cats,tags)
+  allCategories.value = cats.map(c => c.name)
+  allTags.value = tags.map(t => t.name)
 });
 
 const renderMd = () => {
@@ -348,12 +365,6 @@ const renderMd = () => {
   // 在这里可以添加其他渲染逻辑
 };
 
-/* 粒子背景 */
-onMounted(() => {
-  renderMd();
-});
-
-import { postArticle } from '@/apis/articles';
 // 文章表单数据
 const article = ref({
   title: '',
@@ -367,7 +378,7 @@ const article = ref({
 
 // 提交文章
 const submitArticle = () => {
-    // 设置内容字段
+  // 设置内容字段
   article.value.content = source.value;
   article.value.html_content = html.value;
   // 前端验证
@@ -425,10 +436,38 @@ const copy = (url) => {
 watch(source, debounce(() => {
   parseMetaData();        // 每当 Markdown 内容变化时重新解析元数据
 }, 300), { deep: true }); // deep: true 确保能检测到字符串内部的变化
+
+const showDrawer = ref(false)
+
+/* 分隔线拖拽逻辑（简单版） */
+const isDragging = ref(false)
+const editorContainer = ref(null)
+function startDrag(e) {
+  isDragging.value = true
+  document.addEventListener('mousemove', onDrag)
+  document.addEventListener('mouseup', stopDrag)
+}
+function onDrag(e) {
+  if (!isDragging.value) return
+  const containerRect = editorContainer.value.getBoundingClientRect()
+  const percent = ((e.clientX - containerRect.left) / containerRect.width) * 100
+  if (percent < 20 || percent > 80) return
+  editorContainer.value.style.gridTemplateColumns = `${percent}% 4px ${100 - percent}%`
+}
+function stopDrag() {
+  isDragging.value = false
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', stopDrag)
+}
+
+
+
+
+
 </script>
 
 <style scoped>
-/* 主题变量 */
+/* ===== 全局变量 ===== */
 :root {
   --primary: #7a5af5;
   --secondary: #ff6b9c;
@@ -437,97 +476,54 @@ watch(source, debounce(() => {
   --darker: #0a0a12;
   --light: #fffffe;
   --gray: #a7a9be;
-  --border-radius: 16px;
-  --transition: all 0.3s ease;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(15, 14, 23, .6);
+  --transition: all .25s ease;
 }
 
+/* ===== 滚动条 ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* ===== 外层 ===== */
 .markdown-editor-wrapper {
-  position: relative;
-  padding: 20px;
-  font-family: 'Noto Sans SC', sans-serif;
-  min-height: 80vh;
-  overflow: hidden; /* 隐藏最外层滚动轴 */
-}
-/* 元数据显示样式 */
-.metadata-display {
-  margin: 15px 0;
-  padding: 10px;
-  background: rgba(122, 90, 245, 0.1);
-  border-radius: 8px;
-}
-
-.metadata-display h5 {
-  margin: 5px 0;
-  color: var(--accent);
-  font-size: 0.85rem;
-}
-
-.tag-list {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f0e17 0%, #1a1929 100%);
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 8px;
-}
-
-.tag-list .el-tag {
-  margin: 2px;
-}
-
-.particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-/* 在style部分添加 */
-.article-meta {
-  padding: 15px 20px;
-  background: rgba(15, 14, 23, 0.7);
-  border: 1px solid rgba(122, 90, 245, 0.2);
-  border-top: none;
-}
-
-.title-input {
-  width: 100%;
-  background: transparent;
-  border: none;
+  flex-direction: column;
   color: var(--light);
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  outline: none;
+  font-family: 'Noto Sans SC', sans-serif;
+  overflow: hidden;
 }
 
-.excerpt-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: var(--gray);
-  resize: vertical;
-  min-height: 60px;
-  outline: none;
-}
-/* 工具栏样式 */
+/* ===== 工具栏 ===== */
 .toolbar {
   display: flex;
   gap: 8px;
   padding: 12px 20px;
-  background: rgba(15, 14, 23, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  border: 1px solid rgba(122, 90, 245, 0.2);
-  border-bottom: none;
-  position: relative;
-  z-index: 2;
+  background: rgba(15, 14, 23, .7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(122, 90, 245, .2);
 }
 
 .toolbar button {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: none;
-  border-radius: 8px;
-  background: rgba(122, 90, 245, 0.2);
+  border-radius: var(--radius);
+  background: rgba(122, 90, 245, .15);
   color: var(--light);
-  cursor: pointer;
   transition: var(--transition);
   display: grid;
   place-items: center;
@@ -535,29 +531,51 @@ watch(source, debounce(() => {
 
 .toolbar button:hover {
   background: var(--primary);
-  box-shadow: 0 0 10px var(--primary);
+  box-shadow: 0 0 12px var(--primary);
 }
 
-.hidden {
-  display: none;
+/* ===== 标题 / 摘要 ===== */
+.article-meta {
+  padding: 15px 20px;
+  background: rgba(15, 14, 23, .5);
+  border-bottom: 1px solid rgba(122, 90, 245, .2);
 }
 
-/* 编辑器和预览器样式 */
+.title-input {
+  width: 100%;
+  font-size: 1.6rem;
+  background: transparent;
+  border: none;
+  color: var(--light);
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.excerpt-input {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  background: transparent;
+  border: none;
+  color: var(--gray);
+  outline: none;
+}
+
+/* ===== 左右两栏 + 分隔线 ===== */
 .editor-container {
+  flex: 1;
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;
-  height: 70vh;
-  height: calc(100vh - 180px); /* 动态计算高度，确保内容区域可滚动 */
-  /* position: relative; */
-  /* z-index: 1; */
+  grid-template-columns: 55% 4px 1fr;
+  height: 0;
+  /* 让 flex 撑开 */
 }
 
 .editor,
 .preview {
   padding: 20px;
-  background: rgba(15, 14, 23, 0.7);
+  background: rgba(15, 14, 23, .6);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(122, 90, 245, 0.2);
+  border: none;
   color: var(--light);
   line-height: 1.8;
   overflow-y: auto;
@@ -566,146 +584,147 @@ watch(source, debounce(() => {
 .editor {
   resize: none;
   outline: none;
-  border-radius: 0 0 0 var(--border-radius);
+  border-radius: 0;
   font-size: 1rem;
 }
 
 .preview {
-  border-left: none;
-  border-radius: 0 0 var(--border-radius) 0;
+  border-radius: 0;
 }
 
-/* 数学公式样式 */
-.preview :not(pre)>.katex {
-  display: inline-block !important;
-  margin: 0 4px;
-  vertical-align: middle;
+.split-line {
+  background: rgba(122, 90, 245, .2);
+  cursor: col-resize;
+  transition: var(--transition);
 }
 
-.preview .katex-block {
-  display: block;
-  margin: 1em 0;
-  text-align: center;
-}
-
-/* 嵌套列表样式 - 修复的关键 */
-.preview ul,
-.preview ol {
-  padding-left: 1.5em;
-  margin: 1em 0;
-}
-
-.preview ul ul,
-.preview ol ol,
-.preview ul ol,
-.preview ol ul {
-  padding-left: 1.8em;
-  margin: 0.5em 0;
-}
-
-.preview li {
-  margin: 0.5em 0;
-  position: relative;
-}
-
-.preview li::before {
-  content: '';
-  position: absolute;
-  left: -1.2em;
-  top: 0.7em;
-  width: 6px;
-  height: 6px;
+.split-line:hover {
   background: var(--primary);
-  border-radius: 50%;
 }
 
-.preview ul ul li::before {
-  background: var(--secondary);
-}
-
-.preview ul ul ul li::before {
-  background: var(--accent);
-}
-
-.image-panel {
-  background: rgba(15, 14, 23, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(122, 90, 245, 0.2);
-  border-left: none;
-  border-radius: 0 0 var(--border-radius) 0;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 200px;
-  overflow-y: auto;
-}
-
-.image-panel h4 {
+/* ===== 预览区美化 ===== */
+.preview h1,
+.preview h2,
+.preview h3,
+.preview h4,
+.preview h5,
+.preview h6 {
+  margin: 1.2em 0 .6em;
   color: var(--accent);
-  font-size: 1rem;
-  margin: 0;
+  font-weight: 600;
 }
 
-.uploader {
-  border: 2px dashed var(--primary);
-  border-radius: 8px;
-  padding: 20px 5px;
-  text-align: center;
+.preview code {
+  background: rgba(0, 208, 255, .12);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.preview pre {
+  background: var(--darker);
+  border-left: 4px solid var(--primary);
+  padding: 16px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+
+.preview blockquote {
+  border-left: 4px solid var(--secondary);
+  padding-left: 1em;
   color: var(--gray);
+  font-style: italic;
 }
 
-.uploader:hover {
-  border-color: var(--accent);
+.preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.preview th,
+.preview td {
+  padding: 8px 12px;
+  border: 1px solid rgba(122, 90, 245, .2);
+}
+
+.preview th {
+  background: rgba(122, 90, 245, .15);
+}
+
+/* ===== 图片仓库抽屉 ===== */
+.image-panel-drawer {
+  padding: 0 10px;
 }
 
 .img-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex: 1;
 }
 
 .img-list li {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin: 10px 0;
 }
 
 .img-list img {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: var(--radius);
 }
 
 .img-list span {
   flex: 1;
-  font-size: 0.75rem;
+  font-size: .8rem;
   color: var(--light);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.img-list button {
+.img-actions button {
   background: none;
   border: none;
   color: var(--accent);
+  margin: 3px;
   cursor: pointer;
+  transition: var(--transition);
 }
 
-/* 响应式增强：移动端隐藏侧边栏，改为抽屉 */
+.img-actions button:hover {
+  color: var(--secondary);
+}
+
+/* ===== 悬浮按钮 ===== */
+.float-img-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 56px;
+  height: 56px;
+  z-index: 1000;
+  background: var(--primary);
+  color: var(--light);
+  box-shadow: var(--shadow);
+}
+
+.float-img-btn:hover {
+  background: var(--secondary);
+}
+
+/* ===== 移动端适配 ===== */
 @media (max-width: 768px) {
   .editor-container {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
   }
 
-  .image-panel {
+  .split-line {
     display: none;
-    /* 可用 <el-drawer> 触发 */
   }
 }
 </style>
