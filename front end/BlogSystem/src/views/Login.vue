@@ -74,13 +74,14 @@ const rules = {
 const submit = async () => {
   await formRef.value.validate()
   loading.value = true
+  console.log(form)
   try {
     const { detail, access_token, refresh_token } = await login(form)
     localStorage.setItem('access_token', access_token)
     localStorage.setItem('refresh_token', refresh_token)
     ElMessage.success(detail)
     router.replace('/')
-    localStorage.setItem('test','123')
+    // localStorage.setItem('test','123')
   } catch (e) {
     console.error('登录失败', e)   // 建议保留，方便排查
   } finally {

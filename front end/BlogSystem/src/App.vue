@@ -14,8 +14,8 @@ import { RouterView } from 'vue-router'
 
 <style lang="less">
 /* 全局样式 */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+@import url('https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css');
+@import url('https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
 
 :root {
   --primary: #7a5af5;

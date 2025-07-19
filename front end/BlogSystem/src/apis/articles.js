@@ -2,6 +2,7 @@ import request from '@/utils/request'
 
 // 文章 API
 export const postArticle = (article) => {
+  console.log(article)
   return request.post('/articles/', article)
 };
 

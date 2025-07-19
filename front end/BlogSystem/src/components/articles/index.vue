@@ -126,22 +126,22 @@ import { debounce } from 'lodash-es';
 import { postArticle, getCategoryList, getTagList, createCategory, createTag } from '@/apis/articles'
 
 // 统一把“本地字符串数组”与“后端返回数组”比对，对缺失项调用创建接口
-const ensureBackendItems = async ( localArr, remoteArr, createFn ) => {
-  // console.log(localArr)
-  const remoteNames = new Set(remoteArr.map(r => r.name))
-  const toCreate = localArr.filter(name => !remoteNames.has(name))
-  console.log(toCreate)
+// const ensureBackendItems = async ( localArr, remoteArr, createFn ) => {
+//   // console.log(localArr)
+//   const remoteNames = new Set(remoteArr.map(r => r.name))
+//   const toCreate = localArr.filter(name => !remoteNames.has(name))
+//   console.log(toCreate)
 
-  // 并发创建
-  const created = await Promise.all(
-    toCreate.map(name => createFn(name).then(res => res.data))
-  )
-  // 合并：已有 + 新建
-  return [
-    ...remoteArr.filter(r => localArr.includes(r.name)),
-    ...created
-  ]
-}
+//   // 并发创建
+//   const created = await Promise.all(
+//     toCreate.map(name => createFn(name).then(res => res.data))
+//   )
+//   // 合并：已有 + 新建
+//   return [
+//     ...remoteArr.filter(r => localArr.includes(r.name)),
+//     ...created
+//   ]
+// }
 // 初始 Markdown 内容
 const source = ref(`---
 categories:
@@ -151,6 +151,7 @@ tags:
   - markdown
   - 编辑器
   - 元数据
+cover_image:
 ---
 
 # Hello 星尘
@@ -191,7 +192,8 @@ $$
 // 元数据
 const metaData = ref({
   categories: [],
-  tags: []
+  tags: [],
+  cover_image: '',
 })
 
 // 对话框显示状态
@@ -230,8 +232,10 @@ const parseMetaData = () => {
       const parsed = yaml.load(yamlMatch[1])
       metaData.value = {
         categories: Array.isArray(parsed.categories) ? parsed.categories : [],
-        tags: Array.isArray(parsed.tags) ? parsed.tags : []
+        tags: Array.isArray(parsed.tags) ? parsed.tags : [],
+        cover_image: parsed.cover_image || '',
       }
+      console.log(metaData.value)
     } catch (e) {
       console.error('YAML解析失败:', e)
     }
@@ -245,14 +249,14 @@ const saveMetaData = async () => {
   const localCats = metaData.value.categories
   const localTags = metaData.value.tags
 
-  // 2. 与后端比对，新建没有的
-  const finalCats = await ensureBackendItems(localCats, allCategories.value, createCategory)
-  const finalTags = await ensureBackendItems(localTags, allTags.value, createTag)
-  console.log(finalCats, finalTags, 1)
+  // // 2. 与后端比对，新建没有的
+  // const finalCats = await ensureBackendItems(localCats, allCategories.value, createCategory)
+  // const finalTags = await ensureBackendItems(localTags, allTags.value, createTag)
+  console.log(localCats, localTags, 1)
 
   // 3. 回写到 article
-  article.value.categories = finalCats.map(c => c.name)
-  article.value.tags = finalTags.map(t => t.name)
+  article.value.categories = localCats.map(c => c.name)
+  article.value.tags = localTags.map(t => t.name)
   const yamlStr = yaml.dump({
     categories: metaData.value.categories,
     tags: metaData.value.tags
@@ -369,6 +373,7 @@ const renderMd = () => {
 const article = ref({
   title: '',
   content: '',
+  cover_image: '',
   html_content: '',
   excerpt: '',
   categories: [],
@@ -379,8 +384,13 @@ const article = ref({
 // 提交文章
 const submitArticle = () => {
   // 设置内容字段
-  article.value.content = source.value;
-  article.value.html_content = html.value;
+  article.value.content = source.value
+  article.value.html_content = html.value
+  article.value.tags = metaData.value.tags
+  article.value.categories = metaData.value.categories
+  console.log(article.value)
+  // article.value.excerpt
+  // artice.value.cover_image
   // 前端验证
   if (!article.value.title.trim()) {
     ElMessage.error('请输入文章标题');
