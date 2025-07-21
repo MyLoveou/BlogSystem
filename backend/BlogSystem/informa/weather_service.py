@@ -8,6 +8,7 @@ from datetime import timedelta
 from datetime import date
 from django.db import transaction
 from .models import WeatherApiQuota
+from celery import shared_task
 # 配置示例 (settings.py)
 # WEATHER_API_KEY = "your_api_key"
 # WEATHER_API_URL = "https://api.weatherapi.com/v1/current.json"
@@ -27,7 +28,7 @@ def fetch_weather_data(location: str) -> dict:
         return resp.json()
     except requests.exceptions.RequestException as e:
         return {'error': str(e)}
-
+@shared_task
 def update_weather_cache(locations: list):
     """更新或创建天气缓存记录"""
     for location in locations:

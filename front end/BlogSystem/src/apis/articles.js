@@ -23,3 +23,8 @@ export const createCategory = (category) => {
 export const createTag = (tag) => {
   return request.post('/tags/', {"name": tag })
 }
+
+export const getArticleList = (params) => {
+  console.log(params, "测试")
+  return request.get('/articles/', { params })
+}

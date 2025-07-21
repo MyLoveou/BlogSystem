@@ -48,3 +48,4 @@ tmp/
 
 # 忽略测试数据
 test-data/
+backend/BlogSystem/debug.log

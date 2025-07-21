@@ -6,7 +6,7 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register('weathercache', WeatherCacheViewSet, basename='weathercache')
+router.register('weather', WeatherCacheViewSet, basename='weathercache')
 router.register('images', ImageUploadViewSet, basename='images')
 
 

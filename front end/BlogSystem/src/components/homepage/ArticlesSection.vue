@@ -1,104 +1,127 @@
 <template>
-  <div class="articles-section">
-    <h2 class="section-title animate-fade">最新推荐 <i class="fas fa-fire"></i></h2>
-    <div class="articles-grid">
-      <ArticleCard 
-        v-for="(article, index) in articles" 
-        :key="article.id"
-        :article="article"
-        :class="`animate-fade delay-${index}`"
+  <section class="article-list">
+    <!-- loading -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <div>加载中...</div>
+    </div>
+
+    <!-- empty -->
+    <div v-else-if="!list.length" class="empty-container">
+      <i class="far fa-file-alt"></i>
+      <p>暂无文章</p>
+    </div>
+
+    <!-- 列表 -->
+    <div v-else class="grid-container">
+      <ArticleCard
+        v-for="item in list"
+        :key="item.id"
+        :article="item"
+        class="article-item"
       />
     </div>
-  </div>
+  </section>
 </template>
 
-<script>
+<script setup>
 import ArticleCard from '../ArticleCard.vue'
+import { getArticleList } from "@/apis/articles.js"
+import { ref, onMounted } from 'vue'
 
-export default {
-  components: {
-    ArticleCard
-  },
-  data() {
-    return {
-      articles: [
-        {
-          id: 1,
-          title: '二次元角色绘画技巧：从线稿到上色',
-          excerpt: '分享我多年来积累的二次元角色绘画技巧，包括线稿绘制、色彩搭配和光影处理，适合初学者和进阶画师...',
-          category: '绘画教程',
-          date: '2023-10-15',
-          views: 1245,
-          image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
-        },
-        {
-          id: 2,
-          title: '2023年秋季新番推荐：不容错过的5部作品',
-          excerpt: '本季度最值得期待的5部动漫作品，从热血战斗到治愈日常，总有一部能触动你的心弦...',
-          category: '动漫推荐',
-          date: '2023-10-10',
-          views: 987,
-          image: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
-        },
-        {
-          id: 3,
-          title: '用Three.js创建二次元风格3D场景',
-          excerpt: '探索如何使用Three.js和着色器技术创建具有二次元风格的3D场景，为你的网站添加独特视觉效果...',
-          category: '前端技术',
-          date: '2023-10-05',
-          views: 1532,
-          image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
-        },
-        {
-          id: 4,
-          title: '我的2023年手办收藏展示与心得',
-          excerpt: '分享今年入手的精品手办，包括开箱体验、细节展示和收藏心得，一起感受二次元周边的魅力...',
-          category: '手办收藏',
-          date: '2023-09-28',
-          views: 876,
-          image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
-        }
-      ]
-    }
+const list    = ref([])
+const loading = ref(true)
+
+async function fetchData() {
+  try {
+    const data = await getArticleList({ /* 你的查询参数 */ })
+    console.log(data, 0)
+    list.value = data   // 根据后端分页结构取
+    console.log(list.value, 1)
+  } finally {
+    loading.value = false
   }
 }
+
+onMounted(fetchData)
 </script>
 
 <style scoped>
-.articles-section {
-  margin-top: 10px;
+.article-list {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.section-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: var(--light);
-  position: relative;
-  padding-left: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.section-title::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  height: 100%;
-  width: 6px;
-  background: linear-gradient(to bottom, var(--primary), var(--secondary));
-  border-radius: 10px;
-}
-
-.section-title i {
-  margin-left: 15px;
-  color: var(--secondary);
-  font-size: 1.5rem;
-}
-
-.articles-grid {
+.grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
+  gap: 30px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #a0aec0;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(122, 90, 245, 0.2);
+  border-top: 4px solid #7a5af5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #718096;
+}
+
+.empty-container i {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.empty-container p {
+  font-size: 1.2rem;
+}
+
+/* 响应式调整 */
+@media (min-width: 1200px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .article-list {
+    padding: 20px 15px;
+  }
+  
+  .grid-container {
+    gap: 20px;
+  }
 }
 </style>
