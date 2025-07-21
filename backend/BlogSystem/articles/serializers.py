@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from.models import Article, Category, Tag, Page, FriendLink
 
+from.models import Article, Category, Tag, Page, FriendLink
+from informa.models import ImageUpload
 from django.utils import timezone
 from django.utils.text import slugify
 
 from django.contrib.auth import get_user_model
-
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     """用户模型序列化器 (用于关联字段展示)"""
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username']
         read_only_fields = fields  # 所有字段只读
 
 
@@ -101,77 +101,134 @@ class ArticleListSerializer(serializers.ModelSerializer):
         return None
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
-    """文章详情序列化器（完整版）"""
     author = UserSerializer(read_only=True)
     reviewer = UserSerializer(read_only=True)
+    
+    # 输出时嵌套展示
     categories = CategoryTreeSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-    cover_image_url = serializers.SerializerMethodField()
-    
-    # 用于接收分类和标签ID列表
+
+    # 写入时使用这些字段
     category_ids = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
-        source='categories',
         many=True,
-        write_only=True
+        write_only=True,
+        required=False,
     )
     tag_ids = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
-        source='tags',
         many=True,
-        write_only=True
+        write_only=True,
+        required=False,
     )
-    
+    tag_names = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    category_names = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+
+    # cover_image_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=ImageUpload.objects.all(),
+    #     write_only=True,
+    #     required=False,
+    #     help_text='传图片上传表的 ID 作为封面'
+    #  )
+    cover_image_url = serializers.URLField(
+        write_only=True,
+        required=False,
+        help_text='传图片完整 URL，后端将根据 URL 查找对应 ImageUpload'
+    )
+    cover_image_url = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Article
         fields = [
-            'id', 'title', 'content', 'html_content', 'excerpt', 'author',
-            'categories', 'tags', 'status', 'review_status', 'reviewer',
-            'cover_image', 'cover_image_url', 'slug', 'created_at', 'updated_at',
-            'published_at', 'views_count', 'is_deleted', 'deleted_at',
-            'category_ids', 'tag_ids'
+            'id', 'title', 'content', 'html_content', 'excerpt',
+            'author', 'categories', 'tags', 'status', 'review_status',
+            'reviewer', 'slug', 'cover_image_url',
+            'created_at', 'updated_at', 'published_at', 'views_count',
+            'is_deleted', 'deleted_at',
+            'category_ids', 'tag_ids', 'tag_names', 'category_names',
         ]
         read_only_fields = [
-            'id', 'slug', 'created_at', 'updated_at', 'published_at', 
-            'views_count', 'cover_image_url', 'html_content', 'is_deleted', 
-            'deleted_at'
+            'id', 'slug', 'created_at', 'updated_at', 'published_at',
+            'views_count', 
+            'is_deleted', 'deleted_at'
         ]
-    
+
     def get_cover_image_url(self, obj):
-        """安全获取封面图URL"""
-        if obj.cover_image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.cover_image.url)
-            return obj.cover_image.url
-        return None
-    
+         # 只读方法，拼接完整 URL
+         if obj.cover_image and obj.cover_image.image:
+             request = self.context.get('request')
+             path = obj.cover_image.image.url
+             return request.build_absolute_uri(path) if request else path
+         return None
+
     def validate(self, data):
-        """自定义验证逻辑"""
-        # 状态为发布时必须有发布时间
-        if data.get('status') == 'published':
-            if not data.get('published_at') and not self.instance.published_at:
-                data['published_at'] = timezone.now()
-        
-        # 审核通过时需要设置审核人
-        if data.get('review_status') == 'approved':
-            if not data.get('reviewer') and self.context.get('request'):
-                data['reviewer'] = self.context['request'].user
-        
+        if data.get('status') == 'published' and not data.get('published_at'):
+            data['published_at'] = timezone.now()
+        if data.get('review_status') == 'approved' and not data.get('reviewer'):
+            data['reviewer'] = self.context.get('request').user
         return data
-    
+
     def create(self, validated_data):
-        """创建文章时自动设置作者"""
-        # 从请求上下文中获取当前用户
-        if self.context.get('request'):
-            validated_data['author'] = self.context['request'].user
-        return super().create(validated_data)
-    def validate_title(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError("标题不能为空")
-        return value
+
+        # 先剥离所有 M2M 相关字段
+        cat_ids = validated_data.pop('category_ids', [])
+        tag_ids = validated_data.pop('tag_ids', [])
+        cat_names = validated_data.pop('category_names', [])
+        tag_names = validated_data.pop('tag_names', [])
+
+        # 创建文章
+        article = Article.objects.create(**validated_data)
+ 
+        # 关联已有分类/标签
+        if cat_ids:
+            article.categories.set(cat_ids)
+        if tag_ids:
+            article.tags.set(tag_ids)
+
+        # 按名称新建或获取再关联
+        for name in cat_names:
+            cat, _ = Category.objects.get_or_create(name=name)
+            article.categories.add(cat)
+        for name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=name)
+            article.tags.add(tag)
+
+        return article
+
+    def update(self, instance, validated_data):
+        # 同样先处理所有写入字段
+        cat_ids = validated_data.pop('category_ids', None)
+        tag_ids = validated_data.pop('tag_ids', None)
+        cat_names = validated_data.pop('category_names', [])
+        tag_names = validated_data.pop('tag_names', [])
+
+        # 普通字段更新
+        instance = super().update(instance, validated_data)
+
+        # 重新设置分类
+        if cat_ids is not None:
+            instance.categories.set(cat_ids)
+        else:
+            # 如果只按名称操作，也可以先清空
+            instance.categories.clear()
+        for name in cat_names:
+            cat, _ = Category.objects.get_or_create(name=name)
+            instance.categories.add(cat)
+
+        # 重新设置标签
+        if tag_ids is not None:
+            instance.tags.set(tag_ids)
+        else:
+            instance.tags.clear()
+        for name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=name)
+            instance.tags.add(tag)
 
 
+        return instance
 class PageSerializer(serializers.ModelSerializer):
     """页面模型序列化器"""
     class Meta:

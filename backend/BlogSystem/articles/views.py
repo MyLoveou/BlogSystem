@@ -76,51 +76,36 @@ class ArticleFilter(filters.FilterSet):
     
     class Meta:
         model = Article
-        fields = ['status', 'review_status', 'category', 'tag', 'author']
+        fields = ['status', 'review_status', 'category', 'tag', 'author'] # 允许的过滤字段
 
 class ArticleViewSet(viewsets.ModelViewSet):
-    """
-    文章API端点
-    
-    提供文章的完整CRUD操作，支持多种过滤和排序
-    """
-    filterset_class = ArticleFilter  # 应用过滤器
+    filterset_class = ArticleFilter
     queryset = Article.objects.filter(is_deleted=False)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ArticleFilter
     search_fields = ['title', 'content', 'excerpt']
     ordering_fields = ['published_at', 'created_at', 'updated_at', 'views_count']
-    
+
     def get_serializer_class(self):
-        """根据动作选择序列化器"""
-        if self.action == 'list':
-            return ArticleListSerializer
-        return ArticleDetailSerializer
-    
+        return ArticleListSerializer if self.action == 'list' else ArticleDetailSerializer
+
     def get_queryset(self):
-        """优化查询性能：预取相关数据"""
         queryset = super().get_queryset()
         queryset = queryset.select_related('author', 'reviewer')
         queryset = queryset.prefetch_related('categories', 'tags')
         return queryset
-    
+
     def get_permissions(self):
-        """细粒度权限控制"""
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAuthenticated()]
         return super().get_permissions()
-    
+
     def perform_create(self, serializer):
-        """创建时自动设置作者"""
         serializer.save(author=self.request.user)
-    
+
     def perform_update(self, serializer):
-        """更新时处理状态变更"""
         instance = self.get_object()
-        
-        # 状态变为发布时自动设置发布时间
         if serializer.validated_data.get('status') == 'published' and not instance.published_at:
             serializer.save(published_at=timezone.now())
         else:
